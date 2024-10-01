@@ -1,0 +1,3 @@
+/home/maarigonzalezz/Escritorio/Tank-Attack/cmake-build-debug/CMakeFiles/Tank_Attack.dir
+/home/maarigonzalezz/Escritorio/Tank-Attack/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/maarigonzalezz/Escritorio/Tank-Attack/cmake-build-debug/CMakeFiles/rebuild_cache.dir
