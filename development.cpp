@@ -6,14 +6,13 @@ private:
     bool** adjMatrix;
     bool* isObstacle;
     int numVertices;
-    int rows, cols; //dimension de cuadricula por si luego quiero cambiarlas
+    int rows, cols;
 
 public:
-
-    Graph(int rows, int cols, bool* obstacles) {
+    Graph(int rows, int cols) {
         this->rows = rows;
         this->cols = cols;
-        numVertices = rows * cols; // Total de nodos en la cuadrícula
+        numVertices = rows * cols;
 
         adjMatrix = new bool*[numVertices];
         for (int i = 0; i < numVertices; i++) {
@@ -22,39 +21,64 @@ public:
                 adjMatrix[i][j] = false;
         }
 
-
         isObstacle = new bool[numVertices];
         for (int i = 0; i < numVertices; i++) {
-            isObstacle[i] = obstacles[i]; // Inicializa los obstáculos
+            isObstacle[i] = false;
         }
 
+        generateRandomMap();
+    }
 
+    int Random(int max) {
+        static unsigned long seed = reinterpret_cast<unsigned long>(this); // Usa la dirección del objeto
+        seed = (214013 * seed + 2531011);
+        return (seed >> 16) % max;
+    }
+
+    void generateRandomMap() {
+        conexionesNodos();
+        randomObstacles();
+    }
+
+    void conexionesNodos() {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 int currentNode = r * cols + c;
-
-                if (!isObstacle[currentNode]) { // Solo conecta si no es un obstáculo
-                    if (r > 0 && !isObstacle[(r - 1) * cols + c]) addEdge(currentNode, (r - 1) * cols + c); // Arriba
-                    if (r < rows - 1 && !isObstacle[(r + 1) * cols + c]) addEdge(currentNode, (r + 1) * cols + c); // Abajo
-                    if (c > 0 && !isObstacle[r * cols + (c - 1)]) addEdge(currentNode, r * cols + (c - 1)); // Izquierda
-                    if (c < cols - 1 && !isObstacle[r * cols + (c + 1)]) addEdge(currentNode, r * cols + (c + 1)); // Derecha
-                }
+                if (r > 0) addEdge(currentNode, (r - 1) * cols + c); // Arriba
+                if (r < rows - 1) addEdge(currentNode, (r + 1) * cols + c); // Abajo
+                if (c > 0) addEdge(currentNode, r * cols + (c - 1)); // Izquierda
+                if (c < cols - 1) addEdge(currentNode, r * cols + (c + 1)); // Derecha
             }
         }
     }
 
+    void randomObstacles() {
+        int maxObstacles = numVertices / 3;
+        int obstaclesPlaced = 0;
+
+        while (obstaclesPlaced < maxObstacles) {
+            int randomCell = Random(numVertices);
+
+            if (!isObstacle[randomCell]) {
+                isObstacle[randomCell] = true;
+                if (!areaAccesible()) {
+                    isObstacle[randomCell] = false;
+                } else {
+                    obstaclesPlaced++;
+                }
+            }
+        }
+    }
 
     void addEdge(int i, int j) {
         adjMatrix[i][j] = true;
         adjMatrix[j][i] = true;
     }
 
-
-    bool areAllAccessibleNodesConnected() {
+    bool areaAccesible() {
         bool* visited = new bool[numVertices]();
         int startNode = -1;
 
-        // Encuentra un nodo accesible para comenzar
         for (int i = 0; i < numVertices; i++) {
             if (!isObstacle[i]) {
                 startNode = i;
@@ -62,37 +86,27 @@ public:
             }
         }
 
-        // Si no hay nodos accesibles, retornamos true
         if (startNode == -1) {
             delete[] visited;
             return true;
         }
 
-        // Realiza DFS desde el nodo accesible encontrado
         DFS(startNode, visited);
 
-        // Verifica si todos los nodos accesibles fueron visitados
-        bool allConnected = true;
+        bool conectados = true;
         for (int i = 0; i < numVertices; i++) {
             if (!isObstacle[i] && !visited[i]) {
-                allConnected = false;
+                conectados = false;
                 break;
             }
         }
 
         delete[] visited;
-        return allConnected;
-    }
-
-    void removeEdge(int i, int j) {
-        adjMatrix[i][j] = false;
-        adjMatrix[j][i] = false;
+        return conectados;
     }
 
     void DFS(int currentNode, bool* visited) {
         visited[currentNode] = true;
-        cout << "visitando node: " << currentNode << endl;
-
         for (int i = 0; i < numVertices; i++) {
             if (adjMatrix[currentNode][i] && !visited[i]) {
                 DFS(i, visited);
@@ -100,15 +114,16 @@ public:
         }
     }
 
-    int getNumVertices() const {
-        return numVertices;
-    }
-
-    void toString() {
-        for (int i = 0; i < numVertices; i++) {
-            cout << i << " : ";
-            for (int j = 0; j < numVertices; j++)
-                cout << adjMatrix[i][j] << " ";
+    void mapaobstacles() {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                int currentNode = r * cols + c;
+                if (isObstacle[currentNode]) {
+                    cout << "X ";  // obstáculo
+                } else {
+                    cout << ". ";  // celda libre
+                }
+            }
             cout << "\n";
         }
     }
@@ -120,4 +135,3 @@ public:
         delete[] isObstacle;
     }
 };
-

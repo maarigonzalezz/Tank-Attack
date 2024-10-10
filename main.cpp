@@ -5,23 +5,11 @@
 #include "development.cpp"
 
 int main(int argc, char* argv[]) {
+    int rows = 5, cols = 5;  // Definir el tamaño del mapa
+    Graph graph(rows, cols);
 
-    bool obstacles[] = {false, false, false, // Fila 0
-                        false, true,  false, // Fila 1
-                        false, false, false}; // Fila 2
-
-    Graph g(3, 3, obstacles); // Crear el grafo
-
-    // Imprimir la matriz de adyacencia
-    g.toString();
-
-    // Verificar si todos los nodos accesibles están conectados
-    if (g.areAllAccessibleNodesConnected()) {
-        cout << "Todos los nodos accesibles están conectados." << endl;
-    } else {
-        cout << "No todos los nodos accesibles están conectados." << endl;
-    }
-
+    cout << "Mapa generado con obstáculos (X):\n";
+    graph.mapaobstacles();
 
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
