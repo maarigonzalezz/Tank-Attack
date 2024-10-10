@@ -1,26 +1,59 @@
 #include <SDL2/SDL.h>
 #include <iostream>
-#include "Game.h"
+#include <SDL2/SDL.h>
+#include <iostream>
+#include "development.cpp"
 
-Game *game = nullptr;
+int main(int argc, char* argv[]) {
 
-int main(int argc, const char * argv[]) {
+    bool obstacles[] = {false, false, false, // Fila 0
+                        false, true,  false, // Fila 1
+                        false, false, false}; // Fila 2
 
-    /*SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window *window = SDL_CreateWindow("Tank Attack!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
-    SDL_SetRenderDrawColor(renderer, 242, 236, 206, 0.8);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
-    SDL_Delay(3000);*/
+    Graph g(3, 3, obstacles); // Crear el grafo
 
-    game = new Game();
-    game->init("Tank Attack!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
-    while (game->running()) {
-        game->handle_events();
-        game->update();
-        game->render();
+    // Imprimir la matriz de adyacencia
+    g.toString();
+
+    // Verificar si todos los nodos accesibles están conectados
+    if (g.areAllAccessibleNodesConnected()) {
+        cout << "Todos los nodos accesibles están conectados." << endl;
+    } else {
+        cout << "No todos los nodos accesibles están conectados." << endl;
     }
-    game->clean();
+
+
+
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cerr << "Error al inicializar SDL: " << SDL_GetError() << std::endl;
+        return 1;
+    }
+
+    SDL_Window* window = SDL_CreateWindow("Tank Attack!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN);
+    if (window == nullptr) {
+        std::cerr << "Error al crear la ventana: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return 1;
+    }
+
+    bool running = true;
+    SDL_Event event;
+
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+            }
+        }
+
+        // Aquí podrías dibujar en la ventana...
+    }
+
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
+
+
     return 0;
+
 }
