@@ -106,13 +106,25 @@ public:
         return conectados;
     }
 
-    void DFS(int currentNode, bool* visited) {
-        visited[currentNode] = true;
-        for (int i = 0; i < numVertices; i++) {
-            if (adjMatrix[currentNode][i] && !visited[i]) {
-                DFS(i, visited);
+    void DFS(int startNode, bool* visited) {
+        int* stack = new int[numVertices];
+        int top = -1;
+
+        stack[++top] = startNode;
+        visited[startNode] = true;
+
+        while (top != -1) {
+            int currentNode = stack[top--];
+
+            for (int i = 0; i < numVertices; i++) {
+                if (adjMatrix[currentNode][i] && !visited[i]) {
+                    visited[i] = true;
+                    stack[++top] = i;
+                }
             }
         }
+
+        delete[] stack;
     }
 
     void mapaobstacles() {
