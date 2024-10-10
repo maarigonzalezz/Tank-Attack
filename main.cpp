@@ -4,6 +4,7 @@
 #include <iostream>
 #include "development.cpp"
 
+
 int main(int argc, char* argv[]) {
     int rows = 5, cols = 5;  // Definir el tamaño del mapa
     Graph graph(rows, cols);
