@@ -18,6 +18,14 @@ include_directories(${OPENGL_INCLUDE_DIR})
 add_executable(Tank_Attack
         main.cpp
         development.cpp
+        Game.cpp
+        Game.h
+        Player.cpp
+        Player.h
+        ACTank.cpp
+        ACTank.h
+        RATank.cpp
+        RATank.h
 )
 
 # Enlazar con las bibliotecas de SDL2 y OpenGL
