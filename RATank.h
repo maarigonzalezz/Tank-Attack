@@ -1,15 +1,19 @@
-//
-// Created by maarigonzalezz on 10/10/24.
-//
 
 #ifndef RATANK_H
 #define RATANK_H
+#include <iostream>
+#include <random>
 
-
-
+using namespace std;
 class RATank {
-
+private:
+    int probN();
+public:
+    int vida= 1;
+    RATank() = default;
+    void movement();
 };
+
 
 
 
