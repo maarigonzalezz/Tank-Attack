@@ -1,27 +1,28 @@
-//#ifndef GAME_H
-//#define GAME_H
-//#include <SDL2/SDL.h>
-//#include <iostream>
+#include "development.cpp"
+#include <iostream>
+#include <QWindow>
+#include <QOpenGLFunctions>
+#include <QOpenGLContext>
+#include <QMainWindow>
+#include <QKeyEvent>
+#include <QWidget>
 
-//using  namespace std;
-//class Game {
-//public:
-  //  Game();
-    //Destructor (no se como se pone ese guion raro)
+class Game : public QMainWindow {
+    Q_OBJECT  // Si estás usando señales y slots
 
-    //void init(const char* title, int x, int y, int width, int height, bool fullscreen);
+public:
+    Game(QWidget *parent = nullptr);  // Constructor
 
-    //void handle_events();
-    //void update();
-    //void render();
-    //void clean();
+protected:
+    void keyPressEvent(QKeyEvent *event) override;  // Sobrescribe el evento de teclado
+    void paintEvent(QPaintEvent *event) override;    // Sobrescribe el evento de pintura
 
-    //bool running();
-//private:
-  //  bool isRunning;
-    //SDL_Window *window;
-    //SDL_Renderer *renderer;
-//};
+private:
+    Graph graph;         // Instancia del grafo
+    void setupUI();      // Configura la interfaz de usuario
+};
+
+
 
 
 

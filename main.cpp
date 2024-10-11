@@ -1,95 +1,39 @@
-#include <SDL2/SDL.h>
+
+#include <QApplication>
+#include <QtWidgets>  // Agrupa todos los widgets como QPushButton, QApplication, QMainWindow, etc.
+#include <QtCore>
+#include "Game.h"
 #include <iostream>
-#include "development.cpp"
+/*#include <QMainWindow>
+#include <QPushButton>
+#include <QObject>
+#include <QMessageBox>*/
 
-bool running = true;
-bool startScreen = true;
+using namespace std;
 
-void renderStartScreen(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255); // Color de fondo
-    SDL_RenderClear(renderer);
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);  // Inicializa la aplicación Qt
 
-    SDL_Rect playButton;
-    playButton.x = 220;
-    playButton.y = 400;
-    playButton.w = 200;
-    playButton.h = 50;
+    QMainWindow window;  // Crea una ventana principal
+    window.setWindowTitle("Tank Attack!");  // Establece el título de la ventana
+    window.resize(800, 600);  // Establece el tamaño de la ventana
 
-    SDL_SetRenderDrawColor(renderer, 0, 128, 0, 255); // Color del botón "Jugar"
-    SDL_RenderFillRect(renderer, &playButton);
+    // Crear un botón
+    QPushButton *button = new QPushButton("Iniciar", &window);  // Crea el botón y lo añade a la ventana
+    button->setGeometry(QRect(QPoint(300, 400), QSize(200, 50)));
 
-    // Renderiza el botón sin texto (puedes agregar gráficos o colores aquí)
-    SDL_RenderPresent(renderer);
-}
+    // Crear la instancia de Game
+    Game game;
 
-void handleStartScreenEvents(SDL_Event& event) {
-    if (event.type == SDL_QUIT) {
-        running = false;
-    } else if (event.type == SDL_MOUSEBUTTONDOWN) {
-        int x, y;
-        SDL_GetMouseState(&x, &y);
+    // Conectar la señal de clic del botón a una ranura (slot)
+    QObject::connect(button, &QPushButton::clicked, [&]() {
+        cout << "quiero dormir por fa sirva" << endl; // Asegúrate de usar endl para que la salida se muestre inmediatamente
+        game.resize(800, 600);  // Tamaño de la ventana del juego
+        game.show();  // Mostrar la ventana del juego
+        window.close();  // Cerrar la ventana principal
+    });
 
-        if (x >= 200 && x <= 400 && y >= 150 && y <= 500) {
-            startScreen = false;
-        }
-    }
-}
+    window.show();  // Muestra la ventana principal en pantalla
 
-int main(int argc, char* argv[]) {
-    int rows = 12, cols = 16;  // Definir el tamaño del mapa
-    Graph graph(rows, cols);
-
-    std::cout << "Mapa generado con obstáculos (X):\n";
-    graph.mapaobstacles();
-
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "Error al inicializar SDL: " << SDL_GetError() << std::endl;
-        return 1;
-    }
-
-    SDL_Window* window = SDL_CreateWindow("Tank Attack!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN);
-    if (window == nullptr) {
-        std::cerr << "Error al crear la ventana: " << SDL_GetError() << std::endl;
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer) {
-        std::cerr << "No se pudo crear el renderer: " << SDL_GetError() << std::endl;
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Event event;
-
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (startScreen) {
-                handleStartScreenEvents(event); // Maneja eventos en la pantalla de inicio
-            } else {
-                // Maneja eventos del juego (aquí podrías agregar más lógica más tarde)
-                if (event.type == SDL_QUIT) {
-                    running = false;
-                }
-            }
-        }
-
-        if (startScreen) {
-            renderStartScreen(renderer); // Renderiza la pantalla de inicio sin texto
-        } else {
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-            SDL_RenderClear(renderer);
-            graph.render(renderer); // Renderiza el mapa
-            SDL_RenderPresent(renderer);
-        }
-    }
-
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-
-    SDL_Quit();
-
-    return 0;
+    return app.exec();  // Ejecuta el bucle de eventos de Qt
 }
