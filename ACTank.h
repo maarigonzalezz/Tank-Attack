@@ -7,13 +7,16 @@
 using namespace std;
 class ACTank {
 private:
-    string typeAzul = "Azul";
+    string p1type = "Azul";
+    string p2type = "Celeste";
+
     int probN();
 public:
     int vida= 1;
     ACTank() = default;
 
     void movement();
+    void initialPos(string type);
 
 };
 

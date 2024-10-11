@@ -20,3 +20,11 @@ void ACTank::movement() {
         cout << "movimiento aleatorio" << endl;
     }
 }
+
+void ACTank::initialPos(string type) {
+    if (type == p1type) {
+        //se coloca de lado izquierdo
+    } else {
+        //se coloca de lado derecho
+    }
+}

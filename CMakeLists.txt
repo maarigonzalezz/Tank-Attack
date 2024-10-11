@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 # Buscar el paquete SDL2
 find_package(SDL2 REQUIRED)
 find_package(SDL2_ttf REQUIRED CONFIG)
+# Encuentra el paquete de Qt5
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
 # Buscar la biblioteca OpenGL
 find_package(OpenGL REQUIRED)
@@ -39,3 +41,4 @@ add_executable(Tank_Attack
 
 # Enlazar con las bibliotecas de SDL2 y OpenGL
 target_link_libraries(Tank_Attack ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} ${SDL2_ttf_LIBRARIES})
+target_link_libraries(Tank_Attack Qt5::Widgets)
