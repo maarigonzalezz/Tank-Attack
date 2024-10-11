@@ -1,9 +1,11 @@
 #include <iostream>
-#include <SDL2/SDL.h>
+#include <QPainter>
+#include <QWidget>
+#include <iostream>
 using namespace std;
 
 
-class Graph {
+class Graph: public QWidget {
 private:
     bool** adjMatrix;
     bool* isObstacle;
@@ -145,26 +147,21 @@ public:
 
 
 
-    void render(SDL_Renderer* renderer) {
+    void render(QPainter &painter) {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 int currentNode = r * cols + c;
-                SDL_Rect cell;
-                cell.x = c * TILE_SIZE;
-                cell.y = r * TILE_SIZE;
-                cell.w = TILE_SIZE;
-                cell.h = TILE_SIZE;
+                QRect cell(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
                 // Si hay un obstáculo, dibuja una celda negra
                 if (isObstacle[currentNode]) {
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color negro para obstáculos
+                    painter.setBrush(Qt::black); // Color negro para obstáculos
                 } else {
-                    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Color blanco para espacios libres
+                    painter.setBrush(Qt::white); // Color blanco para espacios libres
                 }
 
-                SDL_RenderFillRect(renderer, &cell);
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Dibujar borde de la celda
-                SDL_RenderDrawRect(renderer, &cell);
+                painter.drawRect(cell); // Dibuja el borde de la celda
+                painter.fillRect(cell, painter.brush()); // Rellena la celda
             }
         }
     }

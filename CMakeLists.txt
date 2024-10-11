@@ -3,39 +3,33 @@ project(Tank_Attack)
 
 set(CMAKE_CXX_STANDARD 20)
 
-# Buscar el paquete SDL2
-find_package(SDL2 REQUIRED)
-find_package(SDL2_ttf REQUIRED CONFIG)
+# Encuentra el paquete de Qt5
+find_package(Qt5 REQUIRED COMPONENTS Widgets Gui Core OpenGL)
 
-# Buscar la biblioteca OpenGL
-find_package(OpenGL REQUIRED)
+# Añade directorios de include
+include_directories(${Qt5Widgets_INCLUDE_DIRS} ${OpenGL_INCLUDE_DIRS})
 
-# Añadir los directorios de las cabeceras de SDL2
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_ttf_INCLUDE_DIRS})
+# Si usas señales y slots (Q_OBJECT), necesitas este bloque
+set(HEADERS
+        Game.h
+        Player.h
+        ACTank.h
+        RATank.h
+)
 
-# Añadir los directorios de las cabeceras de OpenGL
-include_directories(${OPENGL_INCLUDE_DIR})
+# Procesa las cabeceras para señales y slots, si usas Q_OBJECT
+qt5_wrap_cpp(MOC_SOURCES ${HEADERS})
 
+# Añadir archivos fuente al ejecutable
 add_executable(Tank_Attack
         main.cpp
         development.cpp
         Game.cpp
-        Game.h
         Player.cpp
-        Player.h
         ACTank.cpp
-        ACTank.h
         RATank.cpp
-        RATank.h
-        RATank.cpp
-        RATank.cpp
-        RATank.h
-        ACTank.cpp
-        ACTank.h
-        ACTank.h
-        Player.cpp
-        Player.h
+        ${MOC_SOURCES} # Añadir los archivos generados por moc si usas Q_OBJECT
 )
 
-# Enlazar con las bibliotecas de SDL2 y OpenGL
-target_link_libraries(Tank_Attack ${SDL2_LIBRARIES} ${OPENGL_LIBRARIES} ${SDL2_ttf_LIBRARIES})
+# Vincular las bibliotecas necesarias
+target_link_libraries(Tank_Attack Qt5::Widgets Qt5::Gui Qt5::Core Qt5::OpenGL ${OPENGL_LIBRARIES})

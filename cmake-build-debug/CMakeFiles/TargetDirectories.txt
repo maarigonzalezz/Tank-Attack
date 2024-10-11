@@ -1,3 +1,0 @@
-/home/fabiana/Escritorio/Tank-Attack/cmake-build-debug/CMakeFiles/Tank_Attack.dir
-/home/fabiana/Escritorio/Tank-Attack/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/fabiana/Escritorio/Tank-Attack/cmake-build-debug/CMakeFiles/rebuild_cache.dir
