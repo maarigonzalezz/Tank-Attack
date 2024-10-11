@@ -1,4 +1,5 @@
 #include <iostream>
+#include <SDL2/SDL.h>
 using namespace std;
 
 
@@ -8,6 +9,7 @@ private:
     bool* isObstacle;
     int numVertices;
     int rows, cols;
+    const int TILE_SIZE = 40;
 
 public:
     Graph(int rows, int cols) {
@@ -140,6 +142,33 @@ public:
             cout << "\n";
         }
     }
+
+
+
+    void render(SDL_Renderer* renderer) {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                int currentNode = r * cols + c;
+                SDL_Rect cell;
+                cell.x = c * TILE_SIZE;
+                cell.y = r * TILE_SIZE;
+                cell.w = TILE_SIZE;
+                cell.h = TILE_SIZE;
+
+                // Si hay un obstáculo, dibuja una celda negra
+                if (isObstacle[currentNode]) {
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color negro para obstáculos
+                } else {
+                    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Color blanco para espacios libres
+                }
+
+                SDL_RenderFillRect(renderer, &cell);
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Dibujar borde de la celda
+                SDL_RenderDrawRect(renderer, &cell);
+            }
+        }
+    }
+
 
     ~Graph() {
         for (int i = 0; i < numVertices; i++)
