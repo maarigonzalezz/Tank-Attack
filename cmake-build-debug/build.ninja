@@ -51,14 +51,42 @@ build cmake_object_order_depends_target_Tank_Attack: phony || .
 
 build CMakeFiles/Tank_Attack.dir/main.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/main.cpp || cmake_object_order_depends_target_Tank_Attack
   DEP_FILE = CMakeFiles/Tank_Attack.dir/main.cpp.o.d
-  FLAGS = -std=gnu++20 -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -isystem /usr/include/SDL2
+  OBJECT_DIR = CMakeFiles/Tank_Attack.dir
+  OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir
+
+build CMakeFiles/Tank_Attack.dir/development.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/development.cpp || cmake_object_order_depends_target_Tank_Attack
+  DEP_FILE = CMakeFiles/Tank_Attack.dir/development.cpp.o.d
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -isystem /usr/include/SDL2
   OBJECT_DIR = CMakeFiles/Tank_Attack.dir
   OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir
 
 build CMakeFiles/Tank_Attack.dir/Game.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/Game.cpp || cmake_object_order_depends_target_Tank_Attack
   DEP_FILE = CMakeFiles/Tank_Attack.dir/Game.cpp.o.d
-  FLAGS = -std=gnu++20 -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -isystem /usr/include/SDL2
+  OBJECT_DIR = CMakeFiles/Tank_Attack.dir
+  OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir
+
+build CMakeFiles/Tank_Attack.dir/Player.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/Player.cpp || cmake_object_order_depends_target_Tank_Attack
+  DEP_FILE = CMakeFiles/Tank_Attack.dir/Player.cpp.o.d
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -isystem /usr/include/SDL2
+  OBJECT_DIR = CMakeFiles/Tank_Attack.dir
+  OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir
+
+build CMakeFiles/Tank_Attack.dir/ACTank.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/ACTank.cpp || cmake_object_order_depends_target_Tank_Attack
+  DEP_FILE = CMakeFiles/Tank_Attack.dir/ACTank.cpp.o.d
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -isystem /usr/include/SDL2
+  OBJECT_DIR = CMakeFiles/Tank_Attack.dir
+  OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir
+
+build CMakeFiles/Tank_Attack.dir/RATank.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/RATank.cpp || cmake_object_order_depends_target_Tank_Attack
+  DEP_FILE = CMakeFiles/Tank_Attack.dir/RATank.cpp.o.d
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -isystem /usr/include/SDL2
   OBJECT_DIR = CMakeFiles/Tank_Attack.dir
   OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir
@@ -71,8 +99,9 @@ build CMakeFiles/Tank_Attack.dir/Game.cpp.o: CXX_COMPILER__Tank_Attack_unscanned
 #############################################
 # Link the executable Tank_Attack
 
-build Tank_Attack: CXX_EXECUTABLE_LINKER__Tank_Attack_Debug CMakeFiles/Tank_Attack.dir/main.cpp.o CMakeFiles/Tank_Attack.dir/Game.cpp.o | /usr/lib/x86_64-linux-gnu/libSDL2.so
-  LINK_LIBRARIES = /usr/lib/x86_64-linux-gnu/libSDL2.so
+build Tank_Attack: CXX_EXECUTABLE_LINKER__Tank_Attack_Debug CMakeFiles/Tank_Attack.dir/main.cpp.o CMakeFiles/Tank_Attack.dir/development.cpp.o CMakeFiles/Tank_Attack.dir/Game.cpp.o CMakeFiles/Tank_Attack.dir/Player.cpp.o CMakeFiles/Tank_Attack.dir/ACTank.cpp.o CMakeFiles/Tank_Attack.dir/RATank.cpp.o | /usr/lib/x86_64-linux-gnu/libSDL2.so /usr/lib/x86_64-linux-gnu/libOpenGL.so /usr/lib/x86_64-linux-gnu/libGLX.so
+  FLAGS = -g
+  LINK_LIBRARIES = /usr/lib/x86_64-linux-gnu/libSDL2.so  /usr/lib/x86_64-linux-gnu/libOpenGL.so  /usr/lib/x86_64-linux-gnu/libGLX.so
   OBJECT_DIR = CMakeFiles/Tank_Attack.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -122,14 +151,14 @@ build all: phony Tank_Attack
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /home/maarigonzalezz/Escritorio/Tank-Attack/CMakeLists.txt /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCXXInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeGenericSystem.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeInitializeConfigs.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeLanguageInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU-C.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU-CXX.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FeatureSummary.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU-C.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-Initialize.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/UnixPaths.cmake /usr/lib/x86_64-linux-gnu/cmake/SDL2/sdl2-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/SDL2/sdl2-config.cmake CMakeCache.txt CMakeFiles/3.29.6/CMakeCCompiler.cmake CMakeFiles/3.29.6/CMakeCXXCompiler.cmake CMakeFiles/3.29.6/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | /home/maarigonzalezz/Escritorio/Tank-Attack/CMakeLists.txt /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCXXInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeGenericSystem.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeInitializeConfigs.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeLanguageInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU-C.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU-CXX.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FeatureSummary.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FindOpenGL.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FindPackageHandleStandardArgs.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FindPackageMessage.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU-C.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-Initialize.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/UnixPaths.cmake /usr/lib/x86_64-linux-gnu/cmake/SDL2/sdl2-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/SDL2/sdl2-config.cmake CMakeCache.txt CMakeFiles/3.29.6/CMakeCCompiler.cmake CMakeFiles/3.29.6/CMakeCXXCompiler.cmake CMakeFiles/3.29.6/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/maarigonzalezz/Escritorio/Tank-Attack/CMakeLists.txt /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCXXInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeGenericSystem.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeInitializeConfigs.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeLanguageInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU-C.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU-CXX.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FeatureSummary.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU-C.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-Initialize.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/UnixPaths.cmake /usr/lib/x86_64-linux-gnu/cmake/SDL2/sdl2-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/SDL2/sdl2-config.cmake CMakeCache.txt CMakeFiles/3.29.6/CMakeCCompiler.cmake CMakeFiles/3.29.6/CMakeCXXCompiler.cmake CMakeFiles/3.29.6/CMakeSystem.cmake: phony
+build /home/maarigonzalezz/Escritorio/Tank-Attack/CMakeLists.txt /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCXXInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeCommonLanguageInclude.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeGenericSystem.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeInitializeConfigs.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeLanguageInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeSystemSpecificInformation.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/CMakeSystemSpecificInitialize.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/CMakeCommonCompilerMacros.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU-C.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU-CXX.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Compiler/GNU.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FeatureSummary.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FindOpenGL.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FindPackageHandleStandardArgs.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/FindPackageMessage.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU-C.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU-CXX.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-GNU.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux-Initialize.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/Linux.cmake /snap/clion/296/bin/cmake/linux/x64/share/cmake-3.29/Modules/Platform/UnixPaths.cmake /usr/lib/x86_64-linux-gnu/cmake/SDL2/sdl2-config-version.cmake /usr/lib/x86_64-linux-gnu/cmake/SDL2/sdl2-config.cmake CMakeCache.txt CMakeFiles/3.29.6/CMakeCCompiler.cmake CMakeFiles/3.29.6/CMakeCXXCompiler.cmake CMakeFiles/3.29.6/CMakeSystem.cmake: phony
 
 
 #############################################
