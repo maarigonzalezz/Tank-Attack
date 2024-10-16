@@ -35,7 +35,7 @@ public:
     }
 
     int Random(int max) {
-        static unsigned long seed = reinterpret_cast<unsigned long>(this); // Usa la dirección del objeto
+        static unsigned long seed = reinterpret_cast<unsigned long>(this);
         seed = (214013 * seed + 2531011);
         return (seed >> 16) % max;
     }
@@ -136,9 +136,9 @@ public:
             for (int c = 0; c < cols; c++) {
                 int currentNode = r * cols + c;
                 if (isObstacle[currentNode]) {
-                    cout << "X ";  // obstáculo
+                    cout << "X ";
                 } else {
-                    cout << ". ";  // celda libre
+                    cout << ". ";
                 }
             }
             cout << "\n";
@@ -153,15 +153,15 @@ public:
                 int currentNode = r * cols + c;
                 QRect cell(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
-                // Si hay un obstáculo, dibuja una celda negra
+
                 if (isObstacle[currentNode]) {
-                    painter.setBrush(Qt::black); // Color negro para obstáculos
+                    painter.setBrush(Qt::black);
                 } else {
-                    painter.setBrush(Qt::white); // Color blanco para espacios libres
+                    painter.setBrush(Qt::white);
                 }
 
-                painter.drawRect(cell); // Dibuja el borde de la celda
-                painter.fillRect(cell, painter.brush()); // Rellena la celda
+                painter.drawRect(cell);
+                painter.fillRect(cell, painter.brush());
             }
         }
     }
