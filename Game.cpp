@@ -1,26 +1,52 @@
 #include "Game.h"
+#include "raylib.h"
 
-// Implementación del constructor
-Game::Game(QWidget *parent)
-    : QMainWindow(parent), graph(10, 10) { // Inicializa el grafo con un tamaño de 10x10
-    setupUI();  // Llama a la función para configurar la interfaz
-}
+std::vector<Obstacle> obstacles;
 
-// Implementación de la función para configurar la interfaz
-void Game::setupUI() {
-    setWindowTitle("Tank Attack!");  // Establece el título de la ventana
-    resize(800, 600);  // Establece el tamaño de la ventana
-}
+void Game::tGame(bool a) {
+    if (a == true){
+        InitWindow(screenWidth, screenHeight, "Juego de Tanques por Turnos");
+        cout << "alo" << endl;
 
-// Implementación del evento de teclado
-void Game::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Escape) {
-        close();  // Cierra la ventana si se presiona la tecla Esc
+
+        //creando el grafo
+        Graph mapGraph(numRows, numCols);
+        mapGraph.generateRandomObstacles(numObstacles);
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                if (mapGraph.isObstacle(i, j)) {
+                    // Crear un obstáculo en la celda actual
+                    Obstacle obstacle = {{j * cellSize, i * cellSize, cellSize, cellSize}, DARKGRAY};
+                    obstacles.push_back(obstacle); // Añadir el obstáculo a la lista
+                }
+            }
+        }
+
+        // Definir un obstáculo
+        Obstacle obstacle = {{0, 0, 100, 100}, DARKGRAY};
+
+        SetTargetFPS(60);
+
+        while (!WindowShouldClose()) {
+            float deltaTime = GetFrameTime();
+            matchDuration -= deltaTime;
+
+            if (matchDuration <= 0) {
+                matchDuration = 0; // Evitar que sea negativo
+                BeginDrawing();
+                ClearBackground(RAYWHITE);
+                DrawText("Fin de la partida", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, RED);
+                EndDrawing();
+                continue; // Salta al siguiente ciclo para evitar continuar el juego
+            }
+        }
+
+
+
+
+
+
+
+
     }
-}
-
-// Implementación del evento de pintura
-void Game::paintEvent(QPaintEvent *event) {
-    QPainter painter(this);  // Crea un QPainter para la ventana
-    graph.render(painter);   // Llama al método de renderizado del grafo
 }

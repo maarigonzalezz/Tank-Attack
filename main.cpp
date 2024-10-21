@@ -12,7 +12,7 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);  // Inicializa la aplicación Qt
+    /*QApplication app(argc, argv);  // Inicializa la aplicación Qt
 
     QMainWindow window;  // Crea una ventana principal
     window.setWindowTitle("Tank Attack!");  // Establece el título de la ventana
@@ -20,20 +20,12 @@ int main(int argc, char *argv[]) {
 
     // Crear un botón
     QPushButton *button = new QPushButton("Iniciar", &window);  // Crea el botón y lo añade a la ventana
-    button->setGeometry(QRect(QPoint(300, 400), QSize(200, 50)));
+    button->setGeometry(QRect(QPoint(300, 400), QSize(200, 50)));*/
 
     // Crear la instancia de Game
-    Game game;
+    Game game(true);
+    cout << "trying" << endl;
+    game.tGame(true);
 
-    // Conectar la señal de clic del botón a una ranura (slot)
-    QObject::connect(button, &QPushButton::clicked, [&]() {
-        cout << "quiero dormir por fa sirva" << endl; // Asegúrate de usar endl para que la salida se muestre inmediatamente
-        game.resize(800, 600);  // Tamaño de la ventana del juego
-        game.show();  // Mostrar la ventana del juego
-        window.close();  // Cerrar la ventana principal
-    });
-
-    window.show();  // Muestra la ventana principal en pantalla
-
-    return app.exec();  // Ejecuta el bucle de eventos de Qt
+    return 0;
 }

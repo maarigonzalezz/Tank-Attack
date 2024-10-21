@@ -1,176 +1,76 @@
 #include <iostream>
-#include <QPainter>
-#include <QWidget>
-#include <iostream>
-using namespace std;
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include "raylib.h"
 
+struct Node {
+    int row, col;
+    bool isObstacle;
+    std::vector<Node*> neighbors;
 
-class Graph: public QWidget {
-private:
-    bool** adjMatrix;
-    bool* isObstacle;
-    int numVertices;
-    int rows, cols;
-    const int TILE_SIZE = 40;
+    Node(int r, int c) : row(r), col(c), isObstacle(false) {}
+};
 
+class Graph {
 public:
-    Graph(int rows, int cols) {
-        this->rows = rows;
-        this->cols = cols;
-        numVertices = rows * cols;
+    int rows, cols;
+    std::vector<std::vector<Node*>> grid;
 
-        adjMatrix = new bool*[numVertices];
-        for (int i = 0; i < numVertices; i++) {
-            adjMatrix[i] = new bool[numVertices];
-            for (int j = 0; j < numVertices; j++)
-                adjMatrix[i][j] = false;
-        }
-
-        isObstacle = new bool[numVertices];
-        for (int i = 0; i < numVertices; i++) {
-            isObstacle[i] = false;
-        }
-
-        generateRandomMap();
-    }
-
-    int Random(int max) {
-        static unsigned long seed = reinterpret_cast<unsigned long>(this); // Usa la dirección del objeto
-        seed = (214013 * seed + 2531011);
-        return (seed >> 16) % max;
-    }
-
-    void generateRandomMap() {
-        conexionesNodos();
-        randomObstacles();
-    }
-
-    void conexionesNodos() {
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                int currentNode = r * cols + c;
-                if (r > 0) addEdge(currentNode, (r - 1) * cols + c); // Arriba
-                if (r < rows - 1) addEdge(currentNode, (r + 1) * cols + c); // Abajo
-                if (c > 0) addEdge(currentNode, r * cols + (c - 1)); // Izquierda
-                if (c < cols - 1) addEdge(currentNode, r * cols + (c + 1)); // Derecha
+    Graph(int r, int c) : rows(r), cols(c) {
+        // Inicializar la grilla con nodos
+        grid.resize(rows);
+        for (int i = 0; i < rows; i++) {
+            grid[i].resize(cols);
+            for (int j = 0; j < cols; j++) {
+                grid[i][j] = new Node(i, j);
             }
         }
+        // Conectar nodos adyacentes
+        connectNodes();
     }
-
-    void randomObstacles() {
-        int maxObstacles = numVertices / 3;
-        int obstaclesPlaced = 0;
-
-        while (obstaclesPlaced < maxObstacles) {
-            int randomCell = Random(numVertices);
-
-            if (!isObstacle[randomCell]) {
-                isObstacle[randomCell] = true;
-                if (!areaAccesible()) {
-                    isObstacle[randomCell] = false;
-                } else {
-                    obstaclesPlaced++;
-                }
-            }
-        }
-    }
-
-    void addEdge(int i, int j) {
-        adjMatrix[i][j] = true;
-        adjMatrix[j][i] = true;
-    }
-
-    bool areaAccesible() {
-        bool* visited = new bool[numVertices]();
-        int startNode = -1;
-
-        for (int i = 0; i < numVertices; i++) {
-            if (!isObstacle[i]) {
-                startNode = i;
-                break;
-            }
-        }
-
-        if (startNode == -1) {
-            delete[] visited;
-            return true;
-        }
-
-        DFS(startNode, visited);
-
-        bool conectados = true;
-        for (int i = 0; i < numVertices; i++) {
-            if (!isObstacle[i] && !visited[i]) {
-                conectados = false;
-                break;
-            }
-        }
-
-        delete[] visited;
-        return conectados;
-    }
-
-    void DFS(int startNode, bool* visited) {
-        int* stack = new int[numVertices];
-        int top = -1;
-
-        stack[++top] = startNode;
-        visited[startNode] = true;
-
-        while (top != -1) {
-            int currentNode = stack[top--];
-
-            for (int i = 0; i < numVertices; i++) {
-                if (adjMatrix[currentNode][i] && !visited[i]) {
-                    visited[i] = true;
-                    stack[++top] = i;
-                }
-            }
-        }
-
-        delete[] stack;
-    }
-
-    void mapaobstacles() {
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                int currentNode = r * cols + c;
-                if (isObstacle[currentNode]) {
-                    cout << "X ";  // obstáculo
-                } else {
-                    cout << ". ";  // celda libre
-                }
-            }
-            cout << "\n";
-        }
-    }
-
-
-
-    void render(QPainter &painter) {
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                int currentNode = r * cols + c;
-                QRect cell(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-
-                // Si hay un obstáculo, dibuja una celda negra
-                if (isObstacle[currentNode]) {
-                    painter.setBrush(Qt::black); // Color negro para obstáculos
-                } else {
-                    painter.setBrush(Qt::white); // Color blanco para espacios libres
-                }
-
-                painter.drawRect(cell); // Dibuja el borde de la celda
-                painter.fillRect(cell, painter.brush()); // Rellena la celda
-            }
-        }
-    }
-
 
     ~Graph() {
-        for (int i = 0; i < numVertices; i++)
-            delete[] adjMatrix[i];
-        delete[] adjMatrix;
-        delete[] isObstacle;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                delete grid[i][j];
+            }
+        }
+    }
+
+    void connectNodes() {
+        // Conectar cada nodo con sus vecinos adyacentes
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (i > 0) grid[i][j]->neighbors.push_back(grid[i - 1][j]); // Arriba
+                if (i < rows - 1) grid[i][j]->neighbors.push_back(grid[i + 1][j]); // Abajo
+                if (j > 0) grid[i][j]->neighbors.push_back(grid[i][j - 1]); // Izquierda
+                if (j < cols - 1) grid[i][j]->neighbors.push_back(grid[i][j + 1]); // Derecha
+            }
+        }
+    }
+
+    void generateRandomObstacles(int numObstacles) {
+        srand(static_cast<unsigned int>(time(0)));
+        int count = 0;
+
+        // Definir los índices de las columnas permitidas para generar obstáculos
+        int startCol = 4; // Ahora comienza en la cuarta columna (índice 3)
+        int endCol = cols - 1; // Sigue siendo la antepenúltima columna
+
+        while (count < numObstacles) {
+            int randRow = rand() % rows;
+            int randCol = startCol + (rand() % (endCol - startCol + 1)); // Genera una columna dentro del rango permitido
+
+            // Solo crea un obstáculo si no hay otro obstáculo en esa posición
+            if (!grid[randRow][randCol]->isObstacle) {
+                grid[randRow][randCol]->isObstacle = true;
+                count++;
+            }
+        }
+    }
+
+    bool isObstacle(int row, int col) {
+        return grid[row][col]->isObstacle;
     }
 };

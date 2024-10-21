@@ -3,33 +3,38 @@ project(Tank_Attack)
 
 set(CMAKE_CXX_STANDARD 20)
 
+# Busca la librería raylib AAAAAAAAAA
+find_package(raylib REQUIRED)
+# Incluir los directorios de raylib
+include_directories(${RAYLIB_INCLUDE_DIRS})
+
+
+
+
 # Encuentra el paquete de Qt5
 find_package(Qt5 REQUIRED COMPONENTS Widgets Gui Core OpenGL)
 
 # Añade directorios de include
 include_directories(${Qt5Widgets_INCLUDE_DIRS} ${OpenGL_INCLUDE_DIRS})
 
-# Si usas señales y slots (Q_OBJECT), necesitas este bloque
-set(HEADERS
+# Añadir archivos fuente al ejecutable
+add_executable(Tank_Attack
+        main.cpp
         Game.h
         Player.h
         ACTank.h
         RATank.h
-)
-
-# Procesa las cabeceras para señales y slots, si usas Q_OBJECT
-qt5_wrap_cpp(MOC_SOURCES ${HEADERS})
-
-# Añadir archivos fuente al ejecutable
-add_executable(Tank_Attack
-        main.cpp
         development.cpp
         Game.cpp
         Player.cpp
         ACTank.cpp
         RATank.cpp
-        ${MOC_SOURCES} # Añadir los archivos generados por moc si usas Q_OBJECT
 )
+
+qt_add_resources(TARGET Tank_Attack FILES images.qrc)
+
+# Vincular raylib a tu proyecto AAAAAAAAAh
+target_link_libraries(Tank_Attack raylib)
 
 # Vincular las bibliotecas necesarias
 target_link_libraries(Tank_Attack Qt5::Widgets Qt5::Gui Qt5::Core Qt5::OpenGL ${OPENGL_LIBRARIES})
