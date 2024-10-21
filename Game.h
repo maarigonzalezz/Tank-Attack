@@ -36,13 +36,14 @@ public:
         cout << "aqui?" << endl;
     }
     void tGame(bool a);
+    bool ColorsAreEqual(Color c1, Color c2);
     void FireBullet(Bullet &bullet, Tank &tank);
     bool MoveTankToMouse(Tank &tank, Vector2 targetPosition, float deltaTime, const Obstacle &obstacle);
     void DrawTank(Tank tank);
     void DrawObstacle(const Obstacle& obstacle) {
         DrawRectangleRec(obstacle.rect, obstacle.color);
     }
-    bool CheckCollisionTankObstacle(const Tank &tank, const Obstacle &obstacle);
+    bool CheckCollisionTankObstacle(const Tank &tank, std::vector<Obstacle> vector1);
     bool CheckCollisionBulletObstacle(const Bullet &bullet, const Obstacle &obstacle);
     void BounceBullet(Bullet &bullet, const Obstacle &obstacle);
     int SelectTankByClick(Tank* tanks, int numTanks, Vector2 mousePosition);
@@ -54,6 +55,7 @@ public:
         if (!tank.active || bullet.shooter == &tank) return false; // No colisionar con tanques inactivos o el tanque que disparó
         return CheckCollisionPointCircle(bullet.position, tank.position, 15); // Asumimos un radio de 15 para el tanque
     }
+    void CountTanksByColor(Tank* player1Tanks, Tank* player2Tanks, int& yellowCount, int& skyBlueCount, int& redCount, int& blueCount);
 
 
 private:
