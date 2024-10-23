@@ -31,6 +31,7 @@ add_executable(Tank_Attack
         Tanks/RATank.cpp
         Tanks/Tank.cpp
         Tanks/Tank.h
+        Tanks/RATank.cpp
 )
 
 qt_add_resources(TARGET Tank_Attack FILES images.qrc)

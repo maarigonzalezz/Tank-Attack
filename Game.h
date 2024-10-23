@@ -61,7 +61,7 @@ public:
 
 private:
     bool start;
-    bool isMoving;
+    bool isMoving = false;
     bool turnComplete;
     const int screenWidthP = 1200;
     const int screenHeightP = 600;
@@ -74,8 +74,8 @@ private:
     const float maxMoveDistance = 200.0f;
     const int numTanksPerPlayer = 4;
     float matchDuration = 300.0f; // Duración de la partida en segundos
-    const int numRows = 16; // Filas del mapa
-    const int numCols = 16; // Columnas del mapa
+    const int numRows = screenHeight/50; // Filas del mapa
+    const int numCols = screenWidth/50; // Columnas del mapa
     const float cellSize = 50.0f; // Tamaño de cada celda
     const int numObstacles = 23; // Número de obstáculos aleatorios
     const int tankRadius = 15;

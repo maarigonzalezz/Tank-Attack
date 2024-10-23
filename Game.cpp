@@ -13,16 +13,7 @@ void Game::sGame(bool a) {
     vector<vector<int>> matrizAdyacencia = mapGraph.generateAdjacencyMatrix();
     mapGraph.printAdjacencyMatrix(matrizAdyacencia);
 
-    //Jugadores
-    Player player1({100, 300}, {100, 350}, {100, 400}, {100, 450}, 0.0f, RED, BLUE, matrizAdyacencia, cellSize, 0);
-    Player player2({600, 300}, {600, 350}, {600, 400}, {600, 450}, 180.0f, YELLOW, SKYBLUE, matrizAdyacencia, cellSize, 0);
-
-    Player* currentPlayerTanks = &player1;
-    Player* nextPlayerTanks = &player2;
-    int currentPlayerIndex = player1.id;
-    int nextPlayerIndex = player2.id;
-
-
+    /* -----------------------------------------IMAGENES---------------------------------------------------- */
     // Definir un obstáculo
     Image image2 = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/obstacle.png"); // Cargar la imagen
     Texture2D texture2 = LoadTextureFromImage(image2); // Convertir a textura
@@ -33,7 +24,7 @@ void Game::sGame(bool a) {
     UnloadImage(image2); // Liberar la imagen de la memoria
 
     // Definir background
-    Image imagebg = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/grasss2.png"); // Cargar la imagen
+    Image imagebg = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/arena.png"); // Cargar la imagen
     Texture2D texturebg = LoadTextureFromImage(imagebg); // Convertir a textura
     if (texturebg.id == 0) {
         printf("Error al cargar la textura\n");
@@ -41,11 +32,40 @@ void Game::sGame(bool a) {
     }
     UnloadImage(imagebg); // Liberar la imagen de la memoria
 
+    // Definir tanque rojo
+    Image tanque_rojo = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/TankRojo.png"); // Cargar la imagen
+    Texture2D Red_tank = LoadTextureFromImage(tanque_rojo); // Convertir a textura
+    UnloadImage(tanque_rojo); // Liberar la imagen de la memoria
+
+    // Definir tanque Amarillo
+    Image tanque_amarillo = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/TankAmarillo.png"); // Cargar la imagen
+    Texture2D Yell_tank = LoadTextureFromImage(tanque_amarillo); // Convertir a textura
+    UnloadImage(tanque_amarillo); // Liberar la imagen de la memoria
+
+    // Definir tanque Azul
+    Image tanque_azul = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/TankAzul.png"); // Cargar la imagen
+    Texture2D Blue_tank = LoadTextureFromImage(tanque_azul); // Convertir a textura
+    UnloadImage(tanque_azul); // Liberar la imagen de la memoria
+
+    // Definir tanque Celeste
+    Image tanque_celeste = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/TankCeleste.png"); // Cargar la imagen
+    Texture2D SkyB_tank = LoadTextureFromImage(tanque_celeste); // Convertir a textura
+    UnloadImage(tanque_celeste); // Liberar la imagen de la memoria
+
+    /* -----------------------------------------IMAGENES---------------------------------------------------- */
+
+    //Jugadores
+    Player player1({100, 300}, {100, 350}, {100, 400}, {100, 450}, 0.0f, Red_tank, Blue_tank, matrizAdyacencia, cellSize, 0);
+    Player player2({600, 300}, {600, 350}, {600, 400}, {600, 450}, 180.0f, Yell_tank, SkyB_tank, matrizAdyacencia, cellSize, 0);
+
+    Player* currentPlayerTanks = &player1;
+    Player* nextPlayerTanks = &player2;
+
+    int currentPlayerIndex = player1.id;
+    int nextPlayerIndex = player2.id;
     float timeRemaining = matchDuration;
-    float turnTime = 5.0f; // Duración de cada turno
+    float turnTime = 10.0f; // Duración de cada turno
     float turnTimer = turnTime;
-    int currentPlayer = 1; // Comienza con el jugador 1
-    bool isMoving = false; // Controla si un tanque está en movimiento
     bool turnComplete = false; // Controla si el turno terminó
     Vector2 moveTarget = {0, 0}; // Destino de movimiento
     float remainingDistance = maxMoveDistance; // Distancia restante para mover el tanque
@@ -66,31 +86,40 @@ void Game::sGame(bool a) {
             continue;
         }
 
+        Vector2 mousePosition = GetMousePosition();
+        // Revisar si se hace clic sobre un tanque para seleccionarlo
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && isMoving == false && turnTimer >= 0) {
+            cout << "click"<< endl;
+            int clickedTankIndex = SelectTankByClick(currentPlayerTanks, numTanksPerPlayer, mousePosition);
+            if (clickedTankIndex != -1) {
+                currentPlayerIndex = clickedTankIndex; // Actualizar al tanque seleccionado
+                isMoving = true;
+            } /*else {
+                // Si no se selecciona un tanque, intentar mover el tanque actual
+                moveTarget = mousePosition;
+                remainingDistance = maxMoveDistance;
+                isMoving = true;
+
+            }*/
+        }
+
+        Tank1* selectedTank = currentPlayerTanks->getTank(currentPlayerIndex); // Obtener el tanque como puntero
+
+        if (isMoving == true) {
+            // Llamar al método movement del tanque seleccionado
+            Vector2 targetPosition = moveTarget;
+            selectedTank->movement(targetPosition, matrizAdyacencia, cellSize);
+            isMoving = false;
+        }
+
         if(turnTimer <= 0){
-            turnComplete = false;
+            turnComplete = true;
             Player* temp = currentPlayerTanks;
             currentPlayerTanks = nextPlayerTanks;
             nextPlayerTanks = temp;
             int tempIndex = currentPlayerIndex;
             currentPlayerIndex = nextPlayerIndex;
             turnTimer = turnTime;
-        }
-
-
-        Vector2 mousePosition = GetMousePosition();
-        // Revisar si se hace clic sobre un tanque para seleccionarlo
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !isMoving && !turnComplete) {
-            cout << "click"<< endl;
-            int clickedTankIndex = SelectTankByClick(currentPlayerTanks, numTanksPerPlayer, mousePosition);
-            if (clickedTankIndex != -1) {
-                currentPlayerIndex = clickedTankIndex; // Actualizar al tanque seleccionado
-            } else {
-                // Si no se selecciona un tanque, intentar mover el tanque actual
-                moveTarget = mousePosition;
-                remainingDistance = maxMoveDistance;
-                isMoving = true;
-
-            }
         }
 
         BeginDrawing();
@@ -105,7 +134,6 @@ void Game::sGame(bool a) {
         } else {
             DrawText(TextFormat("Turno del Jugador 2 - Tanque %d", currentPlayerIndex), 10, 10, 20, RED);
         }
-        DrawText(TextFormat("Tiempo del turno: %.1f segundos", turnTimer), 10, 100, 20, WHITE);
 
         for (int i = 0; i < 4; i++) {
             player1.tanques[i]->DrawTank();
@@ -221,9 +249,6 @@ bool Game::CheckCollisionTankObstacle(const Tank &tank, std::vector<Obstacle> ve
     return false;  // No hay colisiones
 }
 
-
-
-
 bool Game::MoveTankToMouse(Tank &tank, Vector2 targetPosition, float deltaTime, const Obstacle &obstacle) {
     Vector2 direction = Vector2Subtract(targetPosition, tank.position);
     float distance = Vector2Length(direction);
@@ -291,6 +316,7 @@ void Game::BounceBullet(Bullet &bullet, const Obstacle &obstacle) {
 int Game::SelectTankByClick(Player* player, int numTanks, Vector2 mousePosition) {
     for (int i = 0; i < numTanks; i++) {
         if (CheckCollisionPointCircle(mousePosition, player->tanques[i]->position, 15)) {
+            cout << i << endl;
             return i; // Retorna el índice del tanque seleccionado
         }
     }

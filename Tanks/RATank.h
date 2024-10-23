@@ -6,19 +6,22 @@
 #include <iostream>
 #include <random>
 #include <string>
+#include <iostream>
+#include <vector>
+#include <cstdlib> // Para rand() y srand()
+#include <ctime>   // Para time()
 #include "Tank.h"
 
 using namespace std;
 class RATank : public Tank1 { // Usa "public" para herencia pública
-private:
-    int probN(); // Método privado
 
 public:
     // Constructor de ACTank que llama al constructor de Tank1
-    RATank(Vector2 pos, float rot, Color col) : Tank1(pos, rot, col) {}
+    RATank(Vector2 pos, float rot, Texture2D img) : Tank1(pos, rot, img) {}
 
-    void movement();
-
+    void movement(Vector2 targetPosition, const std::vector<std::vector<int>>& adjMatrix, int cellSize) override;
+private:
+    std::vector<Vector2> Dijkstra(Vector2 start, Vector2 goal, const std::vector<std::vector<int>>& adjMatrix, int cellsize);
 };
 
 

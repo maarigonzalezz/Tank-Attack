@@ -11,13 +11,13 @@
 using namespace std;
 class ACTank : public Tank1 { // Usa "public" para herencia pública
 private:
-    int probN(); // Método privado
+    void BFS(Vector2 start, Vector2 goal, const std::vector<std::vector<int>>& adjMatrix, int cellsize);
 
 public:
     // Constructor de ACTank que llama al constructor de Tank1
-    ACTank(Vector2 pos, float rot, Color col) : Tank1(pos, rot, col) {}
+    ACTank(Vector2 pos, float rot, Texture2D img) : Tank1(pos, rot, img) {}
 
-    void movement();
+    void movement(Vector2 targetPosition, const std::vector<std::vector<int>>& adjMatrix, int cellSize) override;
 
 };
 

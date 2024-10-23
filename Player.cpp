@@ -42,6 +42,4 @@ Vector2 Player::FindNearestFreeCell(Vector2 position, const std::vector<std::vec
     return position;  // Si no se encuentra una celda libre, devolver la posición original
 }
 
-bool Player::MoveTank(int index, Vector2 target) {
 
-}
