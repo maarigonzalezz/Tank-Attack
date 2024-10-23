@@ -3,82 +3,84 @@
 
 std::vector<Obstacle> obstacles;
 
-void Game::tGame(bool a) {
-    if (a == true){
-        InitWindow(screenWidth, screenHeight, "Juego de Tanques por Turnos");
 
+void Game::sGame(bool a) {
+    InitWindow(screenWidth, screenHeight, "Tank Attack!");
+    // Crear grafo
     Graph mapGraph(numRows, numCols);
-
     mapGraph.generateRandomObstacles(numObstacles);
+    // Generar la matriz de adyacencia
+    vector<vector<int>> matrizAdyacencia = mapGraph.generateAdjacencyMatrix();
+    mapGraph.printAdjacencyMatrix(matrizAdyacencia);
 
+    //Jugadores
+    Player player1({100, 300}, {100, 350}, {100, 400}, {100, 450}, 0.0f, RED, BLUE, matrizAdyacencia, cellSize, 0);
+    Player player2({600, 300}, {600, 350}, {600, 400}, {600, 450}, 180.0f, YELLOW, SKYBLUE, matrizAdyacencia, cellSize, 0);
 
-    for (int i = 0; i < numRows; i++) {
-        for (int j = 0; j < numCols; j++) {
-            if (mapGraph.isObstacle(i, j)) {
-                // Crear un obstáculo en la celda actual
-                Obstacle obstacle = {{j * cellSize, i * cellSize, cellSize, cellSize}, DARKGRAY};
-                obstacles.push_back(obstacle); // Añadir el obstáculo a la lista
-            }
-        }
-    }
+    Player* currentPlayerTanks = &player1;
+    Player* nextPlayerTanks = &player2;
+    int currentPlayerIndex = player1.id;
+    int nextPlayerIndex = player2.id;
 
-    // Jugador 1 - Tanques de colores: 2 amarillos y 2 celestes
-    Tank player1Tanks[numTanksPerPlayer] = {
-            {{100, 300}, 0.0f, YELLOW},
-            {{100, 350}, 0.0f, YELLOW},
-            {{100, 400}, 0.0f, SKYBLUE},
-            {{100, 450}, 0.0f, SKYBLUE}
-    };
-
-    // Jugador 2 - Tanques de colores: 2 rojos y 2 azules
-    Tank player2Tanks[numTanksPerPlayer] = {
-            {{900, 300}, 180.0f, RED},
-            {{900, 350}, 180.0f, RED},
-            {{900, 400}, 180.0f, BLUE},
-            {{900, 450}, 180.0f, BLUE}
-    };
-
-    for (int i = 0; i < numTanksPerPlayer; i++) {
-        restrictedPositions.push_back(player1Tanks[i].position);
-        restrictedPositions.push_back(player2Tanks[i].position);
-    }
-
-
-    Tank* currentPlayerTanks = player1Tanks;
-    Tank* nextPlayerTanks = player2Tanks;
-    int currentPlayerIndex = 0;
-    int nextPlayerIndex = 0;
-
-    Bullet bullets[10] = {0};
 
     // Definir un obstáculo
-    Obstacle obstacle = {{0, 0, 100, 100}, DARKGRAY};
+    Image image2 = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/obstacle.png"); // Cargar la imagen
+    Texture2D texture2 = LoadTextureFromImage(image2); // Convertir a textura
+    if (texture2.id == 0) {
+        printf("Error al cargar la textura\n");
+        CloseWindow();
+    }
+    UnloadImage(image2); // Liberar la imagen de la memoria
 
-    bool isMoving = false;
-    bool turnComplete = false;
-    Vector2 moveTarget = {0, 0};
-    float remainingDistance = maxMoveDistance;
-    float timeRemaining = matchDuration; // Inicializa el tiempo de la partida a 5 minutos
+    // Definir background
+    Image imagebg = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/grasss2.png"); // Cargar la imagen
+    Texture2D texturebg = LoadTextureFromImage(imagebg); // Convertir a textura
+    if (texturebg.id == 0) {
+        printf("Error al cargar la textura\n");
+        CloseWindow();
+    }
+    UnloadImage(imagebg); // Liberar la imagen de la memoria
+
+    float timeRemaining = matchDuration;
+    float turnTime = 5.0f; // Duración de cada turno
+    float turnTimer = turnTime;
+    int currentPlayer = 1; // Comienza con el jugador 1
+    bool isMoving = false; // Controla si un tanque está en movimiento
+    bool turnComplete = false; // Controla si el turno terminó
+    Vector2 moveTarget = {0, 0}; // Destino de movimiento
+    float remainingDistance = maxMoveDistance; // Distancia restante para mover el tanque
 
     SetTargetFPS(60);
-
+    // Bucle principal
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
         timeRemaining -= deltaTime;
+        turnTimer -= deltaTime;
 
         if (timeRemaining <= 0) {
-            timeRemaining = 0; // Evitar que sea negativo
+            timeRemaining = 0;
             BeginDrawing();
             ClearBackground(RAYWHITE);
             DrawText("Fin de la partida", screenWidth / 2 - 100, screenHeight / 2 - 20, 40, RED);
             EndDrawing();
-            continue; // Salta al siguiente ciclo para evitar continuar el juego
+            continue;
         }
 
-        Vector2 mousePosition = GetMousePosition();
+        if(turnTimer <= 0){
+            turnComplete = false;
+            Player* temp = currentPlayerTanks;
+            currentPlayerTanks = nextPlayerTanks;
+            nextPlayerTanks = temp;
+            int tempIndex = currentPlayerIndex;
+            currentPlayerIndex = nextPlayerIndex;
+            turnTimer = turnTime;
+        }
 
+
+        Vector2 mousePosition = GetMousePosition();
         // Revisar si se hace clic sobre un tanque para seleccionarlo
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !isMoving && !turnComplete) {
+            cout << "click"<< endl;
             int clickedTankIndex = SelectTankByClick(currentPlayerTanks, numTanksPerPlayer, mousePosition);
             if (clickedTankIndex != -1) {
                 currentPlayerIndex = clickedTankIndex; // Actualizar al tanque seleccionado
@@ -91,130 +93,97 @@ void Game::tGame(bool a) {
             }
         }
 
-        Tank& selectedTank = currentPlayerTanks[currentPlayerIndex];
-
-        // Movimiento del tanque en su turno
-        if (isMoving) {
-            isMoving = MoveTankToMouse(selectedTank, moveTarget, deltaTime, obstacle);
-            if (!isMoving) {
-                turnComplete = true;
-            }
-        }
-
-        // El jugador puede disparar si ha completado el movimiento y presiona la barra espaciadora
-
-
-        if (!turnComplete && IsKeyPressed(KEY_SPACE)&&selectedTank.active) {
-            for (int i = 0; i < 10; i++) {
-                if (!bullets[i].active) {
-                    FireBullet(bullets[i], selectedTank);
-                    break;
-                }
-            }
-            turnComplete= true;
-
-        }
-        if(turnComplete){
-            turnComplete = false;
-            Tank* temp = currentPlayerTanks;
-            currentPlayerTanks = nextPlayerTanks;
-            nextPlayerTanks = temp;
-            int tempIndex = currentPlayerIndex;
-            currentPlayerIndex = nextPlayerIndex;
-        }
-
-
-        // Actualización de balas
-        for (int i = 0; i < 10; i++) {
-            if (bullets[i].active) {
-                bullets[i].position.x += bullets[i].velocity.x * deltaTime;
-                bullets[i].position.y += bullets[i].velocity.y * deltaTime;
-
-                // Rebotar si la bala colisiona con el obstáculo
-                if (CheckCollisionBulletObstacles(bullets[i], obstacles)) {
-                    for (auto& obstacle : obstacles) {
-                        BounceBullet(bullets[i], obstacle);
-                    }
-                }
-
-                // Verificar colisión con tanques del jugador 1
-                for (int j = 0; j < numTanksPerPlayer; j++) {
-                    if (CheckCollisionBulletTank(bullets[i], player1Tanks[j])) {
-                        player1Tanks[j].active = false; // Desactivar el tanque
-                        bullets[i].active = false; // Desactivar la bala
-                        break;
-                    }
-                }
-
-                // Verificar colisión con tanques del jugador 2
-                for (int j = 0; j < numTanksPerPlayer; j++) {
-                    if (CheckCollisionBulletTank(bullets[i], player2Tanks[j])) {
-                        player2Tanks[j].active = false; // Desactivar el tanque
-                        bullets[i].active = false; // Desactivar la bala
-                        break;
-                    }
-                }
-
-                // Desactivar balas si salen de la pantalla
-                if (bullets[i].position.x < 0 || bullets[i].position.x > screenWidth || bullets[i].position.y < 0 || bullets[i].position.y > screenHeight) {
-                    bullets[i].active = false;
-                }
-            }
-        }
-
-        // Contar tanques activos
-        int yellowCount, skyBlueCount, redCount, blueCount;
-        CountTanksByColor(player1Tanks, player2Tanks, yellowCount, skyBlueCount, redCount, blueCount);
-
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(WHITE);
+        // Dibujar el mapa
+        DrawMap(matrizAdyacencia, cellSize, texture2, texturebg);
 
-
-        for (const Obstacle& obstacle : obstacles) {
-            DrawObstacle(obstacle); // Dibujar cada obstáculo
-        }
-
-
-        // Dibujar tanques de ambos jugadores
-        for (int i = 0; i < numTanksPerPlayer; i++) {
-            DrawTank(player1Tanks[i]);
-            DrawTank(player2Tanks[i]);
-        }
-
-        // Dibujar obstáculo
-
-        // Dibujar balas
-        for (int i = 0; i < 10; i++) {
-            if (bullets[i].active) {
-                DrawCircleV(bullets[i].position, 5, BLACK);
-            }
-        }
-        DrawText(TextFormat("Tiempo restante: %.0f segundos", timeRemaining), 10, 40, 20, DARKGREEN);
-
+        DrawText(TextFormat("Tiempo restante: %.0f segundos", timeRemaining), 10, 40, 20, WHITE);
         // Mostrar de quién es el turno y el tanque seleccionado
-        if (currentPlayerTanks == player1Tanks) {
-            DrawText(TextFormat("Turno del Jugador 1 - Tanque %d", currentPlayerIndex + 1), 10, 10, 20, BLUE);
+        if (currentPlayerTanks == &player1) {
+            DrawText(TextFormat("Turno del Jugador 1 - Tanque %d", currentPlayerIndex), 10, 10, 20, BLUE);
         } else {
-            DrawText(TextFormat("Turno del Jugador 2 - Tanque %d", currentPlayerIndex + 1), 10, 10, 20, RED);
+            DrawText(TextFormat("Turno del Jugador 2 - Tanque %d", currentPlayerIndex), 10, 10, 20, RED);
+        }
+        DrawText(TextFormat("Tiempo del turno: %.1f segundos", turnTimer), 10, 100, 20, WHITE);
+
+        for (int i = 0; i < 4; i++) {
+            player1.tanques[i]->DrawTank();
+            player2.tanques[i]->DrawTank();
         }
 
-
-
-
-        // Mostrar los contadores de tanques en la parte inferior
-        DrawText(TextFormat("Tanques Amarillos: %d", yellowCount), 10, screenHeight - 60, 20, YELLOW);
-        DrawText(TextFormat("Tanques Celestes: %d", skyBlueCount), 10, screenHeight - 40, 20, SKYBLUE);
-        DrawText(TextFormat("Tanques Rojos: %d", redCount), screenWidth - 200, screenHeight - 60, 20, RED);
-        DrawText(TextFormat("Tanques Azules: %d", blueCount), screenWidth - 200, screenHeight - 40, 20, BLUE);
 
         EndDrawing();
     }
 
+    // Cerrar la ventana
     CloseWindow();
 }
+
+
+
+
+// Menú principal
+void Game::Pmenu() {
+    InitWindow(screenWidthP, screenHeightP, "Tank Attack! Menú Principal");
+
+    Image image = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/fondo.png"); // Cargar la imagen
+    if (image.data == NULL) {
+        printf("Error al cargar la imagen\n");
+        CloseWindow();
+    }
+    Texture2D texture = LoadTextureFromImage(image); // Convertir a textura
+    UnloadImage(image); // Liberar la imagen de la memoria
+    if (texture.id == 0) {
+        printf("Error al cargar la textura\n");
+        CloseWindow();
+    }
+
+    // Configuración de FPS
+    SetTargetFPS(60);
+
+    // Variables para el botón
+    Rectangle button = { 830, 400, 200, 40 }; // {x, y, width, height}
+    bool buttonPressed = false;
+
+    while (!WindowShouldClose()) {
+        // Detecta si se hace clic en el botón
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Vector2 mousePos = GetMousePosition();
+            if (CheckCollisionPointRec(mousePos, button)) {
+                buttonPressed = true; // Cambia el estado si el botón fue presionado
+            }
+        }
+
+        // Comienza a dibujar
+        BeginDrawing();
+        ClearBackground(RAYWHITE); // Borra el fondo con un color blanco
+
+        // Imagen de fondo
+        DrawTextureEx(texture, (Vector2){0, 0}, 0.0f, (newWidth / texture.width, newHeight / texture.height), WHITE);
+
+
+        // Dibuja el botón
+        DrawRectangleRec(button, ORANGE);
+        DrawText("INICIAR PARTIDA", button.x + 10, button.y + 10, 20, RAYWHITE); // Texto en el botón
+
+        // Si el botón fue presionado, muestra un mensaje
+        if (buttonPressed) {
+            CloseWindow();
+            sGame(true);
+
+        }
+        EndDrawing();
+    }
+
+    // Unload the texture to free memory
+    UnloadTexture(texture); // Libera la textura de la memoria
+
+    // Cierra la ventana y libera los recursos
+    CloseWindow();
 }
 
-    bool Game::CheckCollisionBulletObstacles(Bullet bullet, std::vector<Obstacle> vector1) {
+bool Game::CheckCollisionBulletObstacles(Bullet bullet, std::vector<Obstacle> vector1) {
     for (const auto &obstacle : obstacles) {
         if (CheckCollisionCircleRec(bullet.position,BulletRadius, obstacle.rect)) {
 
@@ -224,6 +193,23 @@ void Game::tGame(bool a) {
     return false;  // No hay colisiones
 }
 
+void Game::DrawObstacle(const Obstacle& obstacle) {
+    // Verifica que la textura se haya cargado correctamente antes de dibujar
+    if (obstacle.obs.id != 0) {
+        Rectangle source = { 0.0f, 0.0f, (float)obstacle.obs.width, (float)obstacle.obs.height };
+        Rectangle dest = { obstacle.rect.x, obstacle.rect.y, obstacle.rect.width, obstacle.rect.height };
+        Vector2 origin = { 0.0f, 0.0f };
+        DrawTexturePro(obstacle.obs, source, dest, origin, 0.0f, WHITE);
+    } else {
+        DrawRectangleRec(obstacle.rect, obstacle.color);
+        std::cout << "Textura no válida" << std::endl;
+    }
+}
+
+bool Game::CheckCollisionBulletTank(const Bullet &bullet, const Tank &tank) {
+    if (!tank.active || bullet.shooter == &tank) return false; // No colisionar con tanques inactivos o el tanque que disparó
+    return CheckCollisionPointCircle(bullet.position, tank.position, 15); // Asumimos un radio de 15 para el tanque
+}
 
 bool Game::CheckCollisionTankObstacle(const Tank &tank, std::vector<Obstacle> vector1) {
     for (const auto &obstacle : obstacles) {
@@ -275,6 +261,7 @@ void Game::FireBullet(Bullet &bullet, Tank &tank) {
 }
 
 void Game::DrawTank(Tank tank) {
+
     if (!tank.active) return; // No dibujar tanques destruidos
     DrawRectanglePro({tank.position.x, tank.position.y, 50, 30}, {25, 15}, tank.rotation, tank.color);
     DrawCircleV(tank.position, 15, DARKGRAY);
@@ -301,9 +288,9 @@ void Game::BounceBullet(Bullet &bullet, const Obstacle &obstacle) {
     }
 }
 
-int Game::SelectTankByClick(Tank* tanks, int numTanks, Vector2 mousePosition) {
+int Game::SelectTankByClick(Player* player, int numTanks, Vector2 mousePosition) {
     for (int i = 0; i < numTanks; i++) {
-        if (CheckCollisionPointCircle(mousePosition, tanks[i].position, 15)) {
+        if (CheckCollisionPointCircle(mousePosition, player->tanques[i]->position, 15)) {
             return i; // Retorna el índice del tanque seleccionado
         }
     }
@@ -323,6 +310,31 @@ void Game::CountTanksByColor(Tank* player1Tanks, Tank* player2Tanks, int& yellow
         if (player1Tanks[i].active) {
             if (ColorsAreEqual(player1Tanks[i].color, YELLOW)) yellowCount++;
             else if (ColorsAreEqual(player1Tanks[i].color, SKYBLUE)) skyBlueCount++;
+        }
+    }
+}
+
+
+
+void Game::DrawMap(const std::vector<std::vector<int>>& adjMatrix, int cellSize, Texture2D texture2, Texture2D texturebg) {
+    int rows = adjMatrix.size();
+    int cols = adjMatrix[0].size();
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (adjMatrix[i][j] == 1) {
+                // Crear un obstáculo en la celda actual
+                Obstacle obstacle = {
+                    {static_cast<float>(j * cellSize), static_cast<float>(i * cellSize), static_cast<float>(cellSize), static_cast<float>(cellSize)}, // Inicializar rect
+                    DARKGRAY, // Color
+                    texture2  // Textura
+                };
+                obstacles.push_back(obstacle); // Añadir el obstáculo a la lista
+                DrawObstacle(obstacle);
+            }
+            else {
+                DrawTextureEx(texturebg, (Vector2){static_cast<float>(j * cellSize), static_cast<float>(i * cellSize)}, 0.0f, 1.0f, WHITE);
+            }
         }
     }
 }

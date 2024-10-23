@@ -73,4 +73,30 @@ public:
     bool isObstacle(int row, int col) {
         return grid[row][col]->isObstacle;
     }
+
+    // Método para generar una matriz de adyacencia
+    std::vector<std::vector<int>> generateAdjacencyMatrix() {
+        std::vector<std::vector<int>> adjMatrix(rows, std::vector<int>(cols, 0));  // Matriz de adyacencia
+        // Recorrer todos los nodos
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (isObstacle(i, j)) {
+                    adjMatrix[i][j] = 1;
+                }
+            }
+        }
+        return adjMatrix;
+    }
+
+    void printAdjacencyMatrix(const std::vector<std::vector<int>>& adjMatrix) {
+        int n = adjMatrix.size();  // Tamaño de la matriz (nodos)
+
+        // Recorrer la matriz y imprimir cada fila
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                std::cout << adjMatrix[i][j] << " ";  // Imprimir cada elemento
+            }
+            std::cout << std::endl;  // Cambiar de línea al final de cada fila
+        }
+    }
 };

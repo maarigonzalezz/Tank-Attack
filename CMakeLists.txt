@@ -22,13 +22,15 @@ add_executable(Tank_Attack
         main.cpp
         Game.h
         Player.h
-        ACTank.h
-        RATank.h
+        Tanks/ACTank.h
+        Tanks/RATank.h
         development.cpp
         Game.cpp
         Player.cpp
-        ACTank.cpp
-        RATank.cpp
+        Tanks/ACTank.cpp
+        Tanks/RATank.cpp
+        Tanks/Tank.cpp
+        Tanks/Tank.h
 )
 
 qt_add_resources(TARGET Tank_Attack FILES images.qrc)
