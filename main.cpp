@@ -1,7 +1,7 @@
-#include "Game.h"
+
 #include <iostream>
 #include "raylib.h"
-
+#include "Game.h"
 using namespace std;
 
 int main() {

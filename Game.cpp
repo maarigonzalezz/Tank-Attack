@@ -51,7 +51,6 @@ void Game::sGame(bool a) {
     Image tanque_celeste = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/TankCeleste.png"); // Cargar la imagen
     Texture2D SkyB_tank = LoadTextureFromImage(tanque_celeste); // Convertir a textura
     UnloadImage(tanque_celeste); // Liberar la imagen de la memoria
-
     /* -----------------------------------------IMAGENES---------------------------------------------------- */
 
     //Jugadores
@@ -66,6 +65,7 @@ void Game::sGame(bool a) {
     float timeRemaining = matchDuration;
     float turnTime = 10.0f; // Duración de cada turno
     float turnTimer = turnTime;
+    bool tankSelected = false; // Tracks if a tank is selected
     bool turnComplete = false; // Controla si el turno terminó
     Vector2 moveTarget = {0, 0}; // Destino de movimiento
     float remainingDistance = maxMoveDistance; // Distancia restante para mover el tanque
@@ -87,32 +87,19 @@ void Game::sGame(bool a) {
         }
 
         Vector2 mousePosition = GetMousePosition();
-        // Revisar si se hace clic sobre un tanque para seleccionarlo
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && isMoving == false && turnTimer >= 0) {
-            cout << "click"<< endl;
+
+        // Check if the player clicks to select a tank
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !isMoving && !tankSelected) {
             int clickedTankIndex = SelectTankByClick(currentPlayerTanks, numTanksPerPlayer, mousePosition);
             if (clickedTankIndex != -1) {
-                currentPlayerIndex = clickedTankIndex; // Actualizar al tanque seleccionado
-                isMoving = true;
-            } /*else {
-                // Si no se selecciona un tanque, intentar mover el tanque actual
-                moveTarget = mousePosition;
-                remainingDistance = maxMoveDistance;
-                isMoving = true;
-
-            }*/
+                currentPlayerIndex = clickedTankIndex; // Update selected tank
+                tankSelected = true; // A tank is now selected
+            }
         }
 
-        Tank1* selectedTank = currentPlayerTanks->getTank(currentPlayerIndex); // Obtener el tanque como puntero
 
-        if (isMoving == true) {
-            // Llamar al método movement del tanque seleccionado
-            Vector2 targetPosition = moveTarget;
-            selectedTank->movement(targetPosition, matrizAdyacencia, cellSize);
-            isMoving = false;
-        }
-
-        if(turnTimer <= 0){
+        // Handle turn change when the timer ends
+        if (turnTimer <= 0) {
             turnComplete = true;
             Player* temp = currentPlayerTanks;
             currentPlayerTanks = nextPlayerTanks;
@@ -147,8 +134,6 @@ void Game::sGame(bool a) {
     // Cerrar la ventana
     CloseWindow();
 }
-
-
 
 
 // Menú principal
@@ -211,15 +196,6 @@ void Game::Pmenu() {
     CloseWindow();
 }
 
-bool Game::CheckCollisionBulletObstacles(Bullet bullet, std::vector<Obstacle> vector1) {
-    for (const auto &obstacle : obstacles) {
-        if (CheckCollisionCircleRec(bullet.position,BulletRadius, obstacle.rect)) {
-
-            return true;  // Colisión detectada
-        }
-    }
-    return false;  // No hay colisiones
-}
 
 void Game::DrawObstacle(const Obstacle& obstacle) {
     // Verifica que la textura se haya cargado correctamente antes de dibujar
@@ -234,12 +210,12 @@ void Game::DrawObstacle(const Obstacle& obstacle) {
     }
 }
 
-bool Game::CheckCollisionBulletTank(const Bullet &bullet, const Tank &tank) {
+bool Game::CheckCollisionBulletTank(const Bullet &bullet, const Tank1 &tank) {
     if (!tank.active || bullet.shooter == &tank) return false; // No colisionar con tanques inactivos o el tanque que disparó
     return CheckCollisionPointCircle(bullet.position, tank.position, 15); // Asumimos un radio de 15 para el tanque
 }
 
-bool Game::CheckCollisionTankObstacle(const Tank &tank, std::vector<Obstacle> vector1) {
+bool Game::CheckCollisionTankObstacle(const Tank1 &tank, std::vector<Obstacle> vector1) {
     for (const auto &obstacle : obstacles) {
         // Verificar colisión del círculo (tanque con radio) con cada obstáculo (rectángulo)
         if (CheckCollisionCircleRec(tank.position, tankRadius, obstacle.rect)) {
@@ -249,7 +225,7 @@ bool Game::CheckCollisionTankObstacle(const Tank &tank, std::vector<Obstacle> ve
     return false;  // No hay colisiones
 }
 
-bool Game::MoveTankToMouse(Tank &tank, Vector2 targetPosition, float deltaTime, const Obstacle &obstacle) {
+bool Game::MoveTankToMouse(Tank1 &tank, Vector2 targetPosition, float deltaTime, const Obstacle &obstacle) {
     Vector2 direction = Vector2Subtract(targetPosition, tank.position);
     float distance = Vector2Length(direction);
 
@@ -258,86 +234,20 @@ bool Game::MoveTankToMouse(Tank &tank, Vector2 targetPosition, float deltaTime, 
         float moveAmount = fmin(distance, tankSpeed * deltaTime);
         Vector2 newPosition = Vector2Add(tank.position, Vector2Scale(moveDirection, moveAmount));
 
-        // Verificar colisión con el obstáculo
-        Tank tempTank = tank;
+        /* Verificar colisión con el obstáculo
+        Tank1 tempTank = tank;
         tempTank.position = newPosition;
         if (!CheckCollisionTankObstacle(tempTank, obstacles)) {
             tank.position = newPosition;
         }
         else{
             return false;
-        }
+        }*/
 
         tank.rotation = atan2(direction.y, direction.x) * RAD2DEG;
         return true;
     }
     return false;
-}
-
-void Game::FireBullet(Bullet &bullet, Tank &tank) {
-    if(tank.active){
-        bullet.active = true;
-        bullet.position = tank.position;
-        bullet.velocity = {cos(tank.rotation * DEG2RAD) * bulletSpeed, sin(tank.rotation * DEG2RAD) * bulletSpeed};
-        bullet.shooter = &tank; // Asignar el tanque que dispara la bala
-    }
-
-
-}
-
-void Game::DrawTank(Tank tank) {
-
-    if (!tank.active) return; // No dibujar tanques destruidos
-    DrawRectanglePro({tank.position.x, tank.position.y, 50, 30}, {25, 15}, tank.rotation, tank.color);
-    DrawCircleV(tank.position, 15, DARKGRAY);
-    Vector2 cannonEnd = {
-            tank.position.x + cos(tank.rotation * DEG2RAD) * 35,
-            tank.position.y + sin(tank.rotation * DEG2RAD) * 35
-    };
-    DrawLineEx(tank.position, cannonEnd, 5, BLACK);
-}
-
-
-
-
-void Game::BounceBullet(Bullet &bullet, const Obstacle &obstacle) {
-    // Revisar si la bala colisiona en el lado horizontal (superior/inferior) del obstáculo
-    if ((bullet.position.x > obstacle.rect.x && bullet.position.x < obstacle.rect.x + obstacle.rect.width) &&
-        (bullet.position.y <= obstacle.rect.y || bullet.position.y >= obstacle.rect.y + obstacle.rect.height)) {
-        bullet.velocity.y *= -1;  // Invertir la dirección en el eje Y
-    }
-    // Revisar si la bala colisiona en el lado vertical (izquierda/derecha) del obstáculo
-    if ((bullet.position.y > obstacle.rect.y && bullet.position.y < obstacle.rect.y + obstacle.rect.height) &&
-        (bullet.position.x <= obstacle.rect.x || bullet.position.x >= obstacle.rect.x + obstacle.rect.width)) {
-        bullet.velocity.x *= -1;  // Invertir la dirección en el eje X
-    }
-}
-
-int Game::SelectTankByClick(Player* player, int numTanks, Vector2 mousePosition) {
-    for (int i = 0; i < numTanks; i++) {
-        if (CheckCollisionPointCircle(mousePosition, player->tanques[i]->position, 15)) {
-            cout << i << endl;
-            return i; // Retorna el índice del tanque seleccionado
-        }
-    }
-    return -1; // No se seleccionó ningún tanque
-}
-
-bool Game::ColorsAreEqual(Color c1, Color c2) {
-    return (c1.r == c2.r) && (c1.g == c2.g) && (c1.b == c2.b) && (c1.a == c2.a);
-}
-
-// Nueva función para contar tanques por color
-void Game::CountTanksByColor(Tank* player1Tanks, Tank* player2Tanks, int& yellowCount, int& skyBlueCount, int& redCount, int& blueCount) {
-    yellowCount = skyBlueCount = redCount = blueCount = 0;
-
-    // Contar tanques activos de cada color en el Jugador 1
-    for (int i = 0; i < numTanksPerPlayer; i++) {
-        if (player1Tanks[i].active) {
-            if (ColorsAreEqual(player1Tanks[i].color, YELLOW)) yellowCount++;
-            else if (ColorsAreEqual(player1Tanks[i].color, SKYBLUE)) skyBlueCount++;
-        }
-    }
 }
 
 
@@ -363,4 +273,13 @@ void Game::DrawMap(const std::vector<std::vector<int>>& adjMatrix, int cellSize,
             }
         }
     }
+}
+
+int Game::SelectTankByClick(Player *player, int numTanks, Vector2 mousePosition) {
+    for (int i = 0; i < numTanks; i++) {
+        if (CheckCollisionPointCircle(mousePosition, player->tanques[i]->position, 15)) {
+            return i; // Retorna el índice del tanque seleccionado
+        }
+    }
+    return -1; // No se seleccionó ningún tanque
 }

@@ -13,14 +13,6 @@ void RATank::movement(Vector2 targetPosition, const std::vector<std::vector<int>
         std::vector<Vector2> path = Dijkstra(this->position, targetPosition, adjMatrix, cellSize);
     } else {
         cout << "Movimiento aleatorio" << endl;
-
-        // Obtener la celda adyacente aleatoria válida
-        Vector2 nextCell = GetRandomAdjacentCell(position, adjMatrix);
-
-        // Mover el tanque a la nueva celda
-        if (nextCell.x != -1 && nextCell.y != -1) { // Verifica si hay una celda válida
-            position = nextCell; // Actualizar la posición del tanque
-        }
     }
 }
 

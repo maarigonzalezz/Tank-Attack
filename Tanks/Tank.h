@@ -36,7 +36,7 @@ public:
     //virtual void movement(Vector2 targetPosition, const std::vector<std::vector<int>>& adjMatrix, int cellSize);
     virtual int probN();
     bool IsCellFree(Vector2 position, const std::vector<std::vector<int>>& adjMatrix, int cellSize);
-    Vector2 GetRandomAdjacentCell(Vector2 currentPosition, const std::vector<std::vector<int>>& adjMatrix);
+
 };
 
 

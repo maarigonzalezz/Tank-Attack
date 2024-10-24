@@ -8,7 +8,7 @@
 void ACTank::movement(Vector2 targetPosition, const std::vector<std::vector<int>>& adjMatrix, int cellSize) {
     // 50% de probabilidad
     int decision = probN();
-    cout << "d: " << decision << endl;
+    cout << "d ACTANK: " << decision << endl;
     if (decision % 2 == 0) {
         // Implementar la lógica de BFS
         cout << "BFS" << endl;
@@ -17,14 +17,6 @@ void ACTank::movement(Vector2 targetPosition, const std::vector<std::vector<int>
         BFS(this->position ,targetPosition, adjMatrix, cellSize);
     } else {
         cout << "Movimiento aleatorio" << endl;
-
-        // Usar el método de la clase padre para movimiento aleatorio
-        Vector2 nextCell = GetRandomAdjacentCell(position, adjMatrix);
-
-        // Mover el tanque a la nueva celda
-        if (nextCell.x != -1 && nextCell.y != -1) { // Verifica si hay una celda válida
-            position = nextCell; // Actualizar la posición del tanque
-        }
     }
 }
 
