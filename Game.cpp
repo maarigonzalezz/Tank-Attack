@@ -26,10 +26,6 @@ void Game::sGame(bool a) {
     // Definir background
     Image imagebg = LoadImage("/home/maarigonzalezz/Escritorio/Tank-Attack/Images/arena.png"); // Cargar la imagen
     Texture2D texturebg = LoadTextureFromImage(imagebg); // Convertir a textura
-    if (texturebg.id == 0) {
-        printf("Error al cargar la textura\n");
-        CloseWindow();
-    }
     UnloadImage(imagebg); // Liberar la imagen de la memoria
 
     // Definir tanque rojo
@@ -54,8 +50,8 @@ void Game::sGame(bool a) {
     /* -----------------------------------------IMAGENES---------------------------------------------------- */
 
     //Jugadores
-    Player player1({100, 300}, {100, 350}, {100, 400}, {100, 450}, 0.0f, Red_tank, Blue_tank, matrizAdyacencia, cellSize, 0);
-    Player player2({600, 300}, {600, 350}, {600, 400}, {600, 450}, 180.0f, Yell_tank, SkyB_tank, matrizAdyacencia, cellSize, 0);
+    Player player1({100, 300}, {100, 350}, {100, 400}, {100, 450}, 0.0f, Red_tank, Blue_tank, matrizAdyacencia, cellSize, 1);
+    Player player2({600, 300}, {600, 350}, {600, 400}, {600, 450}, 180.0f, Yell_tank, SkyB_tank, matrizAdyacencia, cellSize, 2);
 
     Player* currentPlayerTanks = &player1;
     Player* nextPlayerTanks = &player2;
@@ -66,9 +62,11 @@ void Game::sGame(bool a) {
     float turnTime = 10.0f; // Duración de cada turno
     float turnTimer = turnTime;
     bool tankSelected = false; // Tracks if a tank is selected
-    bool turnComplete = false; // Controla si el turno terminó
     Vector2 moveTarget = {0, 0}; // Destino de movimiento
     float remainingDistance = maxMoveDistance; // Distancia restante para mover el tanque
+    Rectangle* currentplayerrect[4];
+    Rectangle* nextplayerrect[4];
+
 
     SetTargetFPS(60);
     // Bucle principal
@@ -86,18 +84,6 @@ void Game::sGame(bool a) {
             continue;
         }
 
-        Vector2 mousePosition = GetMousePosition();
-
-        // Check if the player clicks to select a tank
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !isMoving && !tankSelected) {
-            int clickedTankIndex = SelectTankByClick(currentPlayerTanks, numTanksPerPlayer, mousePosition);
-            if (clickedTankIndex != -1) {
-                currentPlayerIndex = clickedTankIndex; // Update selected tank
-                tankSelected = true; // A tank is now selected
-            }
-        }
-
-
         // Handle turn change when the timer ends
         if (turnTimer <= 0) {
             turnComplete = true;
@@ -106,7 +92,33 @@ void Game::sGame(bool a) {
             nextPlayerTanks = temp;
             int tempIndex = currentPlayerIndex;
             currentPlayerIndex = nextPlayerIndex;
+            currentPlayerTanks->selectedTankindex = 0;
             turnTimer = turnTime;
+        }
+
+        for (int i = 0; i < currentPlayerTanks->numtanks; i++) {
+            currentplayerrect[i] = new Rectangle(currentPlayerTanks->tanques[i]->position.x - 25,
+                currentPlayerTanks->tanques[i]->position.y - 25,
+                currentPlayerTanks->tanques[i]->width,
+                currentPlayerTanks->tanques[i]->height);
+        }
+        for (int i = 0; i < nextPlayerTanks->numtanks; i++) {
+            nextplayerrect[i] = new Rectangle(nextPlayerTanks->tanques[i]->position.x - 25,
+                nextPlayerTanks->tanques[i]->position.y - 25,
+                nextPlayerTanks->tanques[i]->width,
+                nextPlayerTanks->tanques[i]->height);
+        }
+
+        Vector2 mousePosition = GetMousePosition();
+        // Seleccionar tanque al hacer clic
+        for (int i = 0; i < currentPlayerTanks->numtanks; i++) {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePosition, *currentplayerrect[i])) {
+                printf("Tanque %d seleccionado\n", i);
+                // Actualizar el tanque seleccionado
+                currentPlayerTanks->selectedTankindex = i;
+                cout << "se logró" << endl;
+                break;
+            }
         }
 
         BeginDrawing();
@@ -117,15 +129,22 @@ void Game::sGame(bool a) {
         DrawText(TextFormat("Tiempo restante: %.0f segundos", timeRemaining), 10, 40, 20, WHITE);
         // Mostrar de quién es el turno y el tanque seleccionado
         if (currentPlayerTanks == &player1) {
-            DrawText(TextFormat("Turno del Jugador 1 - Tanque %d", currentPlayerIndex), 10, 10, 20, BLUE);
+            DrawText(TextFormat("Turno del Jugador 1 - Tanque %d", currentPlayerTanks->selectedTankindex), 10, 10, 20, BLUE);
         } else {
-            DrawText(TextFormat("Turno del Jugador 2 - Tanque %d", currentPlayerIndex), 10, 10, 20, RED);
+            DrawText(TextFormat("Turno del Jugador 2 - Tanque %d", currentPlayerTanks->selectedTankindex), 10, 10, 20, RED);
         }
 
         for (int i = 0; i < 4; i++) {
             player1.tanques[i]->DrawTank();
             player2.tanques[i]->DrawTank();
         }
+        for (int i = 0; i < currentPlayerTanks->numtanks; i++) {
+            DrawRectangleLines(currentplayerrect[i]->x, currentplayerrect[i]->y, currentplayerrect[i]->width, currentplayerrect[i]->height, RED);
+        }
+        for (int i = 0; i < nextPlayerTanks->numtanks; i++) {
+            DrawRectangleLines(nextplayerrect[i]->x, nextplayerrect[i]->y, nextplayerrect[i]->width, nextplayerrect[i]->height, BLUE);
+        }
+
 
 
         EndDrawing();

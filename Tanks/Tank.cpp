@@ -10,8 +10,8 @@ void Tank1::DrawTank() {
     if (!this->active) return; // No dibujar tanques destruidos
     // Definir las proporciones del rectángulo de la textura
     Rectangle sourceRect = { 0, 0, static_cast<float>(this->color.width), static_cast<float>(this->color.height) }; // Rectángulo de la imagen completa
-    Rectangle destRect = { this->position.x, this->position.y, 50, 40 }; // Rectángulo de destino para dibujar el tanque (ajusta según el tamaño del tanque)
-    Vector2 origin = { 25, 15 }; // Centro del tanque (ajústalo si es necesario)
+    Rectangle destRect = { this->position.x, this->position.y, 50, 50 }; // Rectángulo de destino para dibujar el tanque (ajusta según el tamaño del tanque)
+    Vector2 origin = { 25, 25 }; // Centro del tanque (ajústalo si es necesario)
 
     // Dibujar la textura del tanque con rotación
     DrawTexturePro(

@@ -18,7 +18,6 @@
 using namespace std;
 class Tank1 {
 public:
-public:
     Tank1(Vector2 pos, float rot, Texture2D img);
     virtual ~Tank1() = default; // Declaración del destructor virtual
 
@@ -26,7 +25,7 @@ public:
 
     const float tankSpeed = 200.0f;
     const float width = 50.0f;
-    const float height = 30.0f;
+    const float height = 50.0f;
     Vector2 position;
     float rotation;
     Texture2D color;
