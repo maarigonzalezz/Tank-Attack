@@ -30,11 +30,13 @@ public:
     float rotation;
     Texture2D color;
     bool active = true; // Tanque activo o destruido
+    int cellSize = 50;
     void DrawTank();
     bool IsMouseOver(Vector2 mousePosition);
     //virtual void movement(Vector2 targetPosition, const std::vector<std::vector<int>>& adjMatrix, int cellSize);
     virtual int probN();
     bool IsCellFree(Vector2 position, const std::vector<std::vector<int>>& adjMatrix, int cellSize);
+    void LineaVista(Vector2 targetPosition, const std::vector<std::vector<int>> &matrizAdyacencia);
 
 };
 

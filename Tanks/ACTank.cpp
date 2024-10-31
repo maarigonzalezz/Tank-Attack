@@ -12,16 +12,10 @@ void ACTank::movement(Vector2 targetPosition, const std::vector<std::vector<int>
     if (decision % 2 == 0) {
         // Implementar la lógica de BFS
         cout << "BFS" << endl;
-
-        // Aquí puedes llamar a una función que implemente el algoritmo BFS
-        BFS(this->position ,targetPosition, adjMatrix, cellSize);
+        BFS(targetPosition, adjMatrix, cellSize);
     } else {
         cout << "Movimiento aleatorio" << endl;
+        LineaVista(targetPosition, adjMatrix);
     }
 }
 
-// Asegúrate de implementar este método en la clase ACTank para el movimiento BFS
-void ACTank::BFS(Vector2 start, Vector2 goal, const std::vector<std::vector<int>>& adjMatrix, int cellsize) {
-    // Lógica para implementar el algoritmo BFS para mover el tanque hacia targetPosition
-    // Esta lógica debería utilizar la matriz de adyacencia para determinar el camino
-}

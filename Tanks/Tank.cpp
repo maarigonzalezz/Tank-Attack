@@ -44,3 +44,42 @@ bool Tank1::IsCellFree(Vector2 position, const std::vector<std::vector<int>>& ad
     return adjMatrix[cellY][cellX] == 0; // Asumiendo 0 es libre
 }
 
+void Tank1::LineaVista(Vector2 targetPosition, const std::vector<std::vector<int>> &matrizAdyacencia) {
+    // Convertir posición actual y objetivo a índices de la matriz
+    int tankRow = position.y / cellSize;
+    int tankCol = position.x / cellSize;
+    int targetRow = targetPosition.y / cellSize;
+    int targetCol = targetPosition.x / cellSize;
+
+    // Calcular dirección de movimiento
+    Vector2 direction = Vector2Normalize(Vector2Subtract(targetPosition, position));
+
+    // Iterar a lo largo de la línea entre la posición actual y el objetivo
+    Vector2 currentPosition = position;
+    bool hasLineOfSight = true;
+
+    while ((int)currentPosition.x / cellSize != targetCol || (int)currentPosition.y / cellSize != targetRow) {
+        // Avanzar en la dirección de la línea
+        currentPosition = Vector2Add(currentPosition, Vector2Scale(direction, cellSize));
+
+        // Verificar si la celda está ocupada por un obstáculo
+        int row = currentPosition.y / cellSize;
+        int col = currentPosition.x / cellSize;
+
+        // Asumimos que 1 representa un obstáculo en la matriz
+        if (matrizAdyacencia[row][col] == 1) {
+            hasLineOfSight = false;  // Bloqueado, sin línea de vista directa
+            break;
+        }
+    }
+
+    // Si no hay obstáculos, mover el tanque directamente hacia el objetivo
+    if (hasLineOfSight) {
+        position = targetPosition;
+        rotation = atan2(direction.y, direction.x) * RAD2DEG; // Actualiza la rotación del tanque
+    } else {
+        // Aquí puedes agregar la lógica para moverse usando otro algoritmo si no tiene línea de vista.
+        std::cout << "No se puede mover en línea de vista: Obstáculo en el camino" << std::endl;
+    }
+}
+

@@ -16,8 +16,8 @@ public:
     const float bulletSpeed = 400.0f;
 
     void FireBullet(Tank1 &tank);
-    void BounceBullet( const Obstacle &obstacle);
-    bool CheckCollisionBulletTank( const Tank1 &tank);
+    void BounceBullet(const Obstacle &obstacle);
+    bool CheckCollisionBulletTank(const Tank1 &tank);
 
 };
 

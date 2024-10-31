@@ -21,11 +21,12 @@ public:
     void sGame(bool a);
     void Pmenu();
 
-    bool MoveTankToMouse(Tank1 &tank, Vector2 targetPosition, float deltaTime, const Obstacle &obstacle);
+    bool MoveTankToMouse(Tank1 &tank, Vector2 targetPosition, float deltaTime, const vector<vector<int>>& matrizAdyacencia);
     void DrawMap(const std::vector<std::vector<int>>& adjMatrix, int cellSize, Texture2D texture2, Texture2D texturebg);
     void DrawObstacle(const Obstacle& obstacle);
     bool CheckCollisionTankObstacle(const Tank1 &tank, std::vector<Obstacle> vector1);
-    int SelectTankByClick(Player* player, int numTanks, Vector2 mousePosition);
+    int SelectTankByClick(Player *currentPlayerTanks, Vector2 mousePosition);
+    int SelectTargetTank(Player *nextPlayerTanks, Vector2 mousePosition);
     bool CheckCollisionBulletTank(const Bullet &bullet, const Tank1 &tank);
 
 
@@ -50,6 +51,9 @@ private:
     const float tankSpeed = 200.0f;
     const float maxMoveDistance = 20.0f;
     std::vector<Vector2> restrictedPositions;
+    Rectangle* currentplayerrect[4];
+    Rectangle* nextplayerrect[4];
+    Vector2 moveTarget = {0, 0}; // Destino de movimiento
 };
 
 

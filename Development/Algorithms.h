@@ -5,6 +5,8 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <queue>
+#include <limits>
 
 class Algorithms {
     Algorithms() = default;

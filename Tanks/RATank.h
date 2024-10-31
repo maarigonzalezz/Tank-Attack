@@ -21,7 +21,7 @@ public:
 
     void movement(Vector2 targetPosition, const std::vector<std::vector<int>>& adjMatrix, int cellSize) override;
 private:
-    std::vector<Vector2> Dijkstra(Vector2 start, Vector2 goal, const std::vector<std::vector<int>>& adjMatrix, int cellsize);
+    void Dijkstra(Vector2 targetPosition, const std::vector<std::vector<int>>& matrizAdyacencia, int cellSize);
 };
 
 
