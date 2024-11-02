@@ -59,8 +59,6 @@ bool RAmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vecto
     cout << startRow << ", " << startCol << "      " << targetRow <<", " << targetCol << endl;
 
     int decision = probN();
-    cout << decision << endl;
-
     vector<Vector2> path;
 
     if (decision < 80) {
@@ -79,25 +77,25 @@ bool RAmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vecto
         }
         cout << "NO HAY PATH:(((" << endl;
         return false;  // No hay camino disponible
-    }
+    } else {
+        // Movimiento aleatorio
+        cout << "Movimiento aleatorio" << endl;
+        Vector2 direction = Vector2Subtract(targetPosition, tank.position);
+        float distance = Vector2Length(direction);
 
-    // Movimiento aleatorio
-    cout << "Movimiento aleatorio" << endl;
-    Vector2 direction = Vector2Subtract(targetPosition, tank.position);
-    float distance = Vector2Length(direction);
+        if (distance > 1.0f) {
+            Vector2 moveDirection = Vector2Normalize(direction);
+            float moveAmount = fmin(distance, 200 * deltaTime);
+            Vector2 newPosition = Vector2Add(tank.position, Vector2Scale(moveDirection, moveAmount));
 
-    if (distance > 1.0f) {
-        Vector2 moveDirection = Vector2Normalize(direction);
-        float moveAmount = fmin(distance, 200 * deltaTime);
-        Vector2 newPosition = Vector2Add(tank.position, Vector2Scale(moveDirection, moveAmount));
-
-        // Verificar colisión con el obstáculo
-        Tank tempTank = tank;
-        tempTank.position = newPosition;
-        if (!CheckCollisionTankObstacle(tempTank, obstacles)) {
-            tank.position = newPosition;
-            tank.rotation = atan2(direction.y, direction.x) * RAD2DEG;
-            return true;  // Movimiento aleatorio completado
+            // Verificar colisión con el obstáculo
+            Tank tempTank = tank;
+            tempTank.position = newPosition;
+            if (!CheckCollisionTankObstacle(tempTank, obstacles)) {
+                tank.position = newPosition;
+                tank.rotation = atan2(direction.y, direction.x) * RAD2DEG;
+                return true;  // Movimiento aleatorio completado
+            }
         }
     }
     return false;  // Movimiento no fue posible
@@ -122,32 +120,32 @@ bool ACmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vecto
         // Mueve el tanque a lo largo del camino
         if (!path.empty()) {
             for (auto [x, y] : path) {
-            cout << "(" << x << ", " << y << ") ";
+                cout << "(" << x << ", " << y << ") ";
             }
             cout << "SI HAY  path BFS" << endl;
             MoveTankAlongPath(tank, path, deltaTime, 50.0f);
             return true;  // Movimiento completado usando BFS
         }
         return false;  // No hay camino disponible
-    }
+    } else {
+        // Movimiento aleatorio
+        cout << "Movimiento aleatorio" << endl;
+        Vector2 direction = Vector2Subtract(targetPosition, tank.position);
+        float distance = Vector2Length(direction);
 
-    // Movimiento aleatorio
-    cout << "Movimiento aleatorio" << endl;
-    Vector2 direction = Vector2Subtract(targetPosition, tank.position);
-    float distance = Vector2Length(direction);
+        if (distance > 1.0f) {
+            Vector2 moveDirection = Vector2Normalize(direction);
+            float moveAmount = fmin(distance, 200 * deltaTime);
+            Vector2 newPosition = Vector2Add(tank.position, Vector2Scale(moveDirection, moveAmount));
 
-    if (distance > 1.0f) {
-        Vector2 moveDirection = Vector2Normalize(direction);
-        float moveAmount = fmin(distance, 200 * deltaTime);
-        Vector2 newPosition = Vector2Add(tank.position, Vector2Scale(moveDirection, moveAmount));
-
-        // Verificar colisión con el obstáculo
-        Tank tempTank = tank;
-        tempTank.position = newPosition;
-        if (!CheckCollisionTankObstacle(tempTank, obstacles)) {
-            tank.position = newPosition;
-            tank.rotation = atan2(direction.y, direction.x) * RAD2DEG;
-            return true;  // Movimiento aleatorio completado
+            // Verificar colisión con el obstáculo
+            Tank tempTank = tank;
+            tempTank.position = newPosition;
+            if (!CheckCollisionTankObstacle(tempTank, obstacles)) {
+                tank.position = newPosition;
+                tank.rotation = atan2(direction.y, direction.x) * RAD2DEG;
+                return true;  // Movimiento aleatorio completado
+            }
         }
     }
     return false;  // Movimiento no fue posible

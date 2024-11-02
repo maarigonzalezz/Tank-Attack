@@ -103,7 +103,7 @@ void Game::sGame(bool a) {
             continue;
         }
 
-        if (tanksP1 < 0 || tanksP2 < 0) {
+        if (tanksP1 <= 0 || tanksP2 <= 0) {
             string ganador;
             if (tanksP1 > 0) {
                 ganador = "Player 1";
@@ -142,7 +142,6 @@ void Game::sGame(bool a) {
                 isMoving = MoveTankToMouse(selectedTank, moveTarget, deltaTime, matrizAdyacencia, obstacle);
                 moveInitiated = true; // Marcar el movimiento como iniciado
             }
-
             // Verifica si el movimiento se completó en esta llamada
             if (!isMoving) {
                 turnComplete = true;
@@ -150,7 +149,7 @@ void Game::sGame(bool a) {
             }
         }
 
-        // El jugador puede disparar si ha completado el movimiento y presiona la barra espaciadora
+        // El jugador puede disparar si ha completado el movimiento y presiona click derecho
         if (!turnComplete && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && selectedTank.active) {
             for (int i = 0; i < 10; i++) {
                 if (!bullets[i].active) {

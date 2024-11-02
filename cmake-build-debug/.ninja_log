@@ -23,3 +23,8 @@
 8	90	1730584551335893690	build.ninja	9b20923e9ee1874d
 1876	2369	1730581521180345826	CMakeFiles/Tank_Attack.dir/Tanks/Bullet.cpp.o	44a535c59e550f5
 2206	3063	1730568967034905062	CMakeFiles/Tank_Attack.dir/Development/Algorithms.cpp.o	dda6336388bf5b45
+10	305	1730585879126998783	CMakeFiles/Tank_Attack.dir/GameLogic/PowerUps.cpp.o	6b184630efb2be1b
+312	689	1730585879428985359	Tank_Attack	6f0f79abfbd7c631
+34	2339	1730586720093156445	CMakeFiles/Tank_Attack.dir/Tanks/Tank.cpp.o	93440bd5aef5d46d
+14	2600	1730586720076156112	CMakeFiles/Tank_Attack.dir/Game.cpp.o	fdaecc204bf6da3a
+2600	2924	1730586722654206376	Tank_Attack	6f0f79abfbd7c631
