@@ -43,3 +43,24 @@ void BounceBullet(Bullet &bullet, const Obstacle &obstacle) {
         }
     }
 }
+
+// Función para disparar la bala
+void FireBullet(Bullet &bullet, const Tank &selectedTank) {
+    Vector2 mousePosition = GetMousePosition();  // Obtén la posición del clic derecho
+
+    // Calcula la dirección hacia el punto clic
+    bullet.velocity = CalculateDirection(selectedTank.position, mousePosition);
+
+    // Configura velocidad y posición inicial de la bala
+    bullet.position = selectedTank.position;
+    bullet.velocity.x *= bullet.speed;  // Multiplica por la velocidad de la bala
+    bullet.velocity.y *= bullet.speed;
+    bullet.active = true;
+}
+
+// Función para calcular la dirección normalizada
+Vector2 CalculateDirection(Vector2 start, Vector2 target) {
+    Vector2 direction = { target.x - start.x, target.y - start.y };
+    float length = sqrt(direction.x * direction.x + direction.y * direction.y);
+    return { direction.x / length, direction.y / length };  // Normalizamos
+}

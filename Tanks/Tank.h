@@ -25,7 +25,7 @@ struct Tank {
 void DrawTank(const Tank &tank);
 int SelectTankByClick(Tank* tanks, int numTanks, Vector2 mousePosition);
 int Restlife(Tank &tank);
-void MoveTankAlongPath(Tank &tank, const vector<Vector2>& path, float deltaTime);
+void MoveTankAlongPath(Tank &tank, const vector<Vector2>& path, float deltaTime, float cellSize);
 bool RAmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vector<vector<int>>& matrizAdyacencia, const std::vector<Obstacle>& obstacles);
 bool ACmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vector<vector<int>>& matrizAdyacencia, const std::vector<Obstacle>& obstacles);
 bool CheckCollisionTankObstacle(const Tank &tank, const std::vector<Obstacle>& obstacles);

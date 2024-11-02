@@ -56,7 +56,7 @@ bool RAmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vecto
     int targetRow = static_cast<int>(targetPosition.x)/50;
     int targetCol = static_cast<int>(targetPosition.y)/50;
 
-    cout << startRow << "     " << startCol << "      " << targetRow <<"    " << targetCol << endl;
+    cout << startRow << ", " << startCol << "      " << targetRow <<", " << targetCol << endl;
 
     int decision = probN();
     cout << decision << endl;
@@ -70,7 +70,11 @@ bool RAmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vecto
         // Mueve el tanque a lo largo del camino
         if (!path.empty()) {
             cout << "SI HAY  path Dijkstra" << endl;
-            MoveTankAlongPath(tank, path, deltaTime);
+            cout << "Camino a seguir: " << endl;
+            for (auto [x, y] : path) {
+                cout << "(" << x << ", " << y << ") ";
+            }
+            MoveTankAlongPath(tank, path, deltaTime, 50.0f);
             return true;  // Movimiento completado usando Dijkstra
         }
         cout << "NO HAY PATH:(((" << endl;
@@ -117,8 +121,11 @@ bool ACmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vecto
         cout << "retorna path BFS" << endl;
         // Mueve el tanque a lo largo del camino
         if (!path.empty()) {
+            for (auto [x, y] : path) {
+            cout << "(" << x << ", " << y << ") ";
+            }
             cout << "SI HAY  path BFS" << endl;
-            MoveTankAlongPath(tank, path, deltaTime);
+            MoveTankAlongPath(tank, path, deltaTime, 50.0f);
             return true;  // Movimiento completado usando BFS
         }
         return false;  // No hay camino disponible
@@ -146,11 +153,18 @@ bool ACmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vecto
     return false;  // Movimiento no fue posible
 }
 
-void MoveTankAlongPath(Tank &tank, const vector<Vector2>& path, float deltaTime) {
+void MoveTankAlongPath(Tank &tank, const vector<Vector2>& path, float deltaTime, float cellSize) {
     if (path.empty()) return; // Si el camino está vacío, no hay nada que hacer
 
     // Recorrer el camino y mover el tanque hacia cada posición
-    for (const Vector2& targetPosition : path) {
+    for (const Vector2& gridPosition : path) {
+        // Convertir la posición de la matriz a coordenadas de pantalla
+        Vector2 targetPosition = Vector2Scale(gridPosition, cellSize);
+
+        // Dibujar una línea blanca entre la posición actual del tanque y el objetivo
+        DrawLine(static_cast<int>(tank.position.x), static_cast<int>(tank.position.y),
+                 static_cast<int>(gridPosition.x), static_cast<int>(targetPosition.y), WHITE);
+
         // Calcular la dirección hacia la posición objetivo
         Vector2 direction = Vector2Subtract(targetPosition, tank.position);
 
@@ -160,13 +174,11 @@ void MoveTankAlongPath(Tank &tank, const vector<Vector2>& path, float deltaTime)
             direction = Vector2Scale(direction, 1.0f / distance); // Normalizar
 
             // Mover el tanque en la dirección del objetivo
-            // Aquí puedes definir una velocidad de movimiento (puedes ajustarla según sea necesario)
-            float speed = 100.0f * deltaTime; // Suponiendo que tienes un deltaTime
+            float speed = 100.0f * deltaTime;
             tank.position = Vector2Add(tank.position, Vector2Scale(direction, speed));
 
             // Verificar si el tanque ha llegado a la posición objetivo
             if (Vector2Distance(tank.position, targetPosition) < speed) {
-                // Si ha llegado, ajustar la posición del tanque a la posición objetivo
                 tank.position = targetPosition;
             }
         }

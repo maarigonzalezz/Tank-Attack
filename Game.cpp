@@ -289,17 +289,16 @@ bool Game::CheckCollisionBulletObstacles(Bullet bullet, const std::vector<Obstac
 bool Game::MoveTankToMouse(Tank &tank, Vector2 targetPosition, float deltaTime, const vector<vector<int>>& matrizAdyacencia, const Obstacle &obstacle) {
     bool completeMove;
     if (ColorToInt(tank.color) == ColorToInt(RED) || ColorToInt(tank.color) == ColorToInt(YELLOW)) {
-        cout << "entro aqui ar?" << endl;
         // Movimiento aleatorio
         completeMove = RAmovement(tank, targetPosition, deltaTime, matrizAdyacencia, obstacles);
     } else {
         // Movimiento algorítmico
-        cout << "entro aqui azc?" << endl;
         completeMove = ACmovement(tank, targetPosition, deltaTime, matrizAdyacencia, obstacles);
     }
     // Si el movimiento se ha completado, retorna false para detener isMoving
-    return false;
+    return !completeMove;
 }
+
 
 void Game::DrawMap(const std::vector<std::vector<int>>& adjMatrix, int cellSize, Texture2D texture2, Texture2D texturebg) {
     int rows = adjMatrix.size();

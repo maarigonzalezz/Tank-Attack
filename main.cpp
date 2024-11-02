@@ -8,7 +8,7 @@ int main() {
     // Crear la instancia de Game
     Game game(true);
     cout << "trying" << endl;
-    //game.Pmenu();
-    game.sGame(true);
+    game.Pmenu();
+    //game.sGame(true);
     return 0;
 }

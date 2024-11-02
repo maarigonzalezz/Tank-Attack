@@ -22,6 +22,8 @@ add_executable(Tank_Attack
         Development/Algorithms.cpp
         Development/Algorithms.h
         GameLogic/Obstacle.h
+        GameLogic/PowerUps.cpp
+        GameLogic/PowerUps.h
 )
 
 # Vincular raylib

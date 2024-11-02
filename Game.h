@@ -28,7 +28,6 @@ public:
     bool CheckCollisionBulletObstacles(Bullet bullet, const std::vector<Obstacle>& obstacles);
 
 
-
 private:
     bool start;
     bool isMoving = false;
