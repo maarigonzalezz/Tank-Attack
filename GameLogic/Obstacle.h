@@ -4,6 +4,5 @@
 struct Obstacle {
     Rectangle rect;
     Color color;
-    Texture2D obs;
 };
 #endif //OBSTACLE_H

@@ -13,17 +13,10 @@ include_directories(${RAYLIB_INCLUDE_DIRS})
 add_executable(Tank_Attack
         main.cpp
         Game.h
-        GameLogic/Player.h
-        Tanks/ACTank.h
-        Tanks/RATank.h
         Development/Graph.cpp
         Game.cpp
-        GameLogic/Player.cpp
-        Tanks/ACTank.cpp
-        Tanks/RATank.cpp
         Tanks/Tank.cpp
         Tanks/Tank.h
-        Tanks/RATank.cpp
         Tanks/Bullet.cpp
         Tanks/Bullet.h
         Development/Algorithms.cpp
@@ -31,6 +24,6 @@ add_executable(Tank_Attack
         GameLogic/Obstacle.h
 )
 
-# Vincular raylib a tu proyecto AAAAAAAAAh
+# Vincular raylib
 target_link_libraries(Tank_Attack raylib)
 

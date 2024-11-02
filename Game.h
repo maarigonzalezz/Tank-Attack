@@ -3,13 +3,11 @@
 #include "raymath.h"
 #include <cmath>
 #include <iostream>
-#include "GameLogic/Player.h"
 #include "Tanks/Tank.h"
 #include "Tanks/Bullet.h"
 #include "GameLogic/Obstacle.h"
 
 using namespace std;
-
 
 class Game {
 public:
@@ -21,13 +19,14 @@ public:
     void sGame(bool a);
     void Pmenu();
 
-    bool MoveTankToMouse(Tank1 &tank, Vector2 targetPosition, float deltaTime, const vector<vector<int>>& matrizAdyacencia);
+    bool MoveTankToMouse(Tank &tank, Vector2 targetPosition, float deltaTime, const vector<vector<int>>& matrizAdyacencia, const Obstacle &obstacle);
     void DrawMap(const std::vector<std::vector<int>>& adjMatrix, int cellSize, Texture2D texture2, Texture2D texturebg);
     void DrawObstacle(const Obstacle& obstacle);
-    bool CheckCollisionTankObstacle(const Tank1 &tank, std::vector<Obstacle> vector1);
-    int SelectTankByClick(Player *currentPlayerTanks, Vector2 mousePosition);
-    int SelectTargetTank(Player *nextPlayerTanks, Vector2 mousePosition);
-    bool CheckCollisionBulletTank(const Bullet &bullet, const Tank1 &tank);
+    bool CheckCollisionTankObstacle(const Tank &tank, const std::vector<Obstacle>& vector1);
+    bool CheckCollisionBulletTank(const Bullet &bullet, const Tank &tank);
+    void FireBullet(Bullet &bullet, Tank &tank);
+    bool CheckCollisionBulletObstacles(Bullet bullet, const std::vector<Obstacle>& obstacles);
+
 
 
 private:
@@ -41,14 +40,15 @@ private:
     const int screenWidth = 800;
     const int screenHeight = 800;
     const int numTanksPerPlayer = 4;
-    float matchDuration = 300.0f; // Duración de la partida en segundos
+    float matchDuration = 30.0f; // Duración de la partida en segundos
     const int numRows = screenHeight/50; // Filas del mapa
     const int numCols = screenWidth/50; // Columnas del mapa
     const float cellSize = 50.0f; // Tamaño de cada celda
     const int numObstacles = 23; // Número de obstáculos aleatorios
     const int tankRadius = 15;
-    const int BulletRadius = 15;
+    const int BulletRadius = 10;
     const float tankSpeed = 200.0f;
+    const float bulletSpeed = 400.0f;
     const float maxMoveDistance = 20.0f;
     std::vector<Vector2> restrictedPositions;
     Rectangle* currentplayerrect[4];

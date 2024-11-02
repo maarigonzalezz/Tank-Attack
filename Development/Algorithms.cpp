@@ -3,132 +3,123 @@
 //
 
 #include "Algorithms.h"
-#include "../Tanks/ACTank.h"
-#include "../Tanks/RATank.h"
 
-void RATank::Dijkstra(Vector2 targetPosition, const std::vector<std::vector<int>>& matrizAdyacencia, int cellSize) {
-    int rows = matrizAdyacencia.size();
-    int cols = matrizAdyacencia[0].size();
-    int startRow = static_cast<int>(position.y) / cellSize;
-    int startCol = static_cast<int>(position.x) / cellSize;
-    int targetRow = static_cast<int>(targetPosition.y) / cellSize;
-    int targetCol = static_cast<int>(targetPosition.x) / cellSize;
+std::vector<Vector2> BFS(const std::vector<std::vector<int>>& MatrizAdy, int startRow, int startCol, int targetRow, int targetCol) {
+    if (startRow < 0 || startCol < 0 || targetRow < 0 || targetCol < 0 ||
+        startRow >= MatrizAdy.size() || targetRow >= MatrizAdy.size() || startCol >= MatrizAdy[0].size() || targetCol >= MatrizAdy[0].size()) {
+        return {}; // Verificación de índices válidos
+        }
 
-    // Vector para distancias y nodos previos
-    std::vector<std::vector<int>> dist(rows, std::vector<int>(cols, std::numeric_limits<int>::max()));
-    std::vector<std::vector<Vector2>> previous(rows, std::vector<Vector2>(cols, {-1, -1}));
-    dist[startRow][startCol] = 0;
+    int numRows = MatrizAdy.size();
+    int numCols = MatrizAdy[0].size();
+    std::vector<std::vector<bool>> visited(numRows, std::vector<bool>(numCols, false));
+    std::vector<std::vector<Vector2>> previous(numRows, std::vector<Vector2>(numCols, {-1, -1}));
+    std::queue<Vector2> queue;
 
-    // Cola de prioridad para distancias mínimas
-    auto comp = [](const std::pair<int, int>& a, const std::pair<int, int>& b) { return a.second > b.second; };
-    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, decltype(comp)> pq(comp);
-    pq.push({startRow * cols + startCol, 0}); // Nodo de inicio
+    queue.push({(float)startRow, (float)startCol});
+    visited[startRow][startCol] = true;
 
-    std::vector<Vector2> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // Direcciones (arriba, abajo, derecha, izquierda)
+    std::vector<Vector2> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // Arriba, Derecha, Abajo, Izquierda
 
-    while (!pq.empty()) {
-        auto current = pq.top();
-        pq.pop();
+    while (!queue.empty()) {
+        Vector2 current = queue.front();
+        queue.pop();
 
-        int currentRow = current.first / cols;
-        int currentCol = current.first % cols;
+        if ((int)current.x == targetRow && (int)current.y == targetCol) {
+            std::vector<Vector2> path;
+            for (Vector2 at = {(float)targetRow, (float)targetCol}; at.x != -1; at = previous[(int)at.x][(int)at.y]) {
+                path.push_back(at);
+            }
+            std::reverse(path.begin(), path.end());
+            return path;
+        }
 
-        if (currentRow == targetRow && currentCol == targetCol) break;
+        for (const Vector2& dir : directions) {
+            int newRow = (int)current.x + (int)dir.x;
+            int newCol = (int)current.y + (int)dir.y;
+            if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols &&
+                !visited[newRow][newCol] && MatrizAdy[newRow][newCol] == 0) { // 0 indica camino libre
+                queue.push({(float)newRow, (float)newCol});
+                visited[newRow][newCol] = true;
+                previous[newRow][newCol] = current;
+                }
+        }
+    }
 
-        for (auto& dir : directions) {
-            int newRow = currentRow + dir.y;
-            int newCol = currentCol + dir.x;
+    return {}; // No se encontró camino
+}
 
-            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && matrizAdyacencia[newRow][newCol] != 1) {
-                int newDist = dist[currentRow][currentCol] + 1;
-                if (newDist < dist[newRow][newCol]) {
-                    dist[newRow][newCol] = newDist;
-                    previous[newRow][newCol] = {static_cast<float>(currentRow), static_cast<float>(currentCol)};
-                    pq.push({newRow * cols + newCol, newDist});
+struct DijkstraNode {
+    Vector2 position;
+    int distance;
+
+    bool operator<(const DijkstraNode& other) const {
+        return distance > other.distance; // Menor distancia tiene prioridad
+    }
+};
+
+std::vector<Vector2> Dijkstra(const std::vector<std::vector<int>>& MatrizAdy, int startRow, int startCol, int targetRow, int targetCol) {
+    // Verificar límites de entrada
+    if (startRow < 0 || startCol < 0 || targetRow < 0 || targetCol < 0 ||
+        startRow >= MatrizAdy.size() || targetRow >= MatrizAdy.size() || startCol >= MatrizAdy[0].size() || targetCol >= MatrizAdy[0].size()) {
+        return {};
+    }
+
+    int numRows = MatrizAdy.size();
+    int numCols = MatrizAdy[0].size();
+
+    // Inicialización de matrices de distancia y predecesores
+    std::vector<std::vector<int>> distance(numRows, std::vector<int>(numCols, std::numeric_limits<int>::max()));
+    std::vector<std::vector<Vector2>> previous(numRows, std::vector<Vector2>(numCols, {-1, -1}));
+    std::vector<std::vector<bool>> visited(numRows, std::vector<bool>(numCols, false));
+    std::priority_queue<DijkstraNode> queue;
+
+    // Punto inicial
+    distance[startRow][startCol] = 0;
+    queue.push({{(float)startRow, (float)startCol}, 0});
+
+    // Direcciones de movimiento: Arriba, Derecha, Abajo, Izquierda
+    std::vector<Vector2> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    // Algoritmo principal
+    while (!queue.empty()) {
+        DijkstraNode current = queue.top();
+        queue.pop();
+
+        int currRow = (int)current.position.x;
+        int currCol = (int)current.position.y;
+
+        // Si llegamos al destino, reconstruir el camino
+        if (currRow == targetRow && currCol == targetCol) {
+            std::vector<Vector2> path;
+            for (Vector2 at = {(float)targetRow, (float)targetCol}; at.x != -1 && at.y != -1; at = previous[(int)at.x][(int)at.y]) {
+                path.push_back(at);
+            }
+            std::reverse(path.begin(), path.end());
+            return path;
+        }
+
+        // Evitar re-expansión de nodos ya visitados
+        if (visited[currRow][currCol]) continue;
+        visited[currRow][currCol] = true;
+
+        // Expandir vecinos
+        for (const Vector2& dir : directions) {
+            int newRow = currRow + (int)dir.x;
+            int newCol = currCol + (int)dir.y;
+
+            // Validar límites y accesibilidad de la celda
+            if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols && MatrizAdy[newRow][newCol] == 0) {
+                int newDist = distance[currRow][currCol] + 1; // Suponiendo costo de 1 para cada paso
+                if (newDist < distance[newRow][newCol]) {
+                    distance[newRow][newCol] = newDist;
+                    previous[newRow][newCol] = { (float)currRow, (float)currCol };
+                    queue.push({{(float)newRow, (float)newCol}, newDist});
                 }
             }
         }
     }
 
-    // Reconstruir la ruta desde `previous`
-    Vector2 pathNode = {static_cast<float>(targetRow), static_cast<float>(targetCol)};
-    std::vector<Vector2> path;
-    while (pathNode.x != -1 && pathNode.y != -1) {
-        path.insert(path.begin(), {pathNode.y * cellSize + cellSize / 2, pathNode.x * cellSize + cellSize / 2});
-        pathNode = previous[static_cast<int>(pathNode.x)][static_cast<int>(pathNode.y)];
-    }
-
-    // Si la ruta existe, moverse a la primera posición de la ruta
-    if (path.size() > 1) {
-        position = path[1];  // Mover a la siguiente posición en el camino
-    }
+    return {}; // No se encontró camino
 }
 
-// Definición del operador para comparar Vector2
-bool operator!=(const Vector2& a, const Vector2& b) {
-    return (a.x != b.x) || (a.y != b.y);
-}
-
-bool operator==(const Vector2& a, const Vector2& b) {
-    return (a.x == b.x) && (a.y == b.y);
-}
-
-void ACTank::BFS(Vector2 targetPosition, const std::vector<std::vector<int>>& matrizAdyacencia, int cellSize) {
-    int rows = matrizAdyacencia.size();
-    int cols = matrizAdyacencia[0].size();
-    int startRow = static_cast<int>(position.y) / cellSize;
-    int startCol = static_cast<int>(position.x) / cellSize;
-    int targetRow = static_cast<int>(targetPosition.y) / cellSize;
-    int targetCol = static_cast<int>(targetPosition.x) / cellSize;
-
-    // Matrices para el estado de visitado y los nodos previos
-    std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
-    std::vector<std::vector<Vector2>> previous(rows, std::vector<Vector2>(cols, {-1, -1}));
-
-    std::queue<std::pair<int, int>> queue; // Cola para el BFS
-    queue.push({startRow, startCol});
-    visited[startRow][startCol] = true;
-
-    std::vector<Vector2> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}; // Direcciones (arriba, abajo, derecha, izquierda)
-
-    bool pathFound = false;
-
-    while (!queue.empty() && !pathFound) {
-        auto current = queue.front();
-        queue.pop();
-
-        int currentRow = current.first;
-        int currentCol = current.second;
-
-        if (currentRow == targetRow && currentCol == targetCol) {
-            pathFound = true;
-            break;
-        }
-
-        for (auto& dir : directions) {
-            int newRow = currentRow + dir.y;
-            int newCol = currentCol + dir.x;
-
-            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols &&
-                matrizAdyacencia[newRow][newCol] != 1 && !visited[newRow][newCol]) {
-                visited[newRow][newCol] = true;
-                previous[newRow][newCol] = Vector2{static_cast<float>(currentRow), static_cast<float>(currentCol)};
-                queue.push({newRow, newCol});
-            }
-        }
-    }
-
-    // Reconstruir la ruta desde `previous`
-    std::vector<Vector2> path;
-    Vector2 pathNode = {static_cast<float>(targetRow), static_cast<float>(targetCol)};
-
-    while (pathNode.x != -1 && pathNode.y != -1 && pathNode != Vector2{static_cast<float>(startRow), static_cast<float>(startCol)}) {
-        path.insert(path.begin(), {pathNode.y * cellSize + cellSize / 2, pathNode.x * cellSize + cellSize / 2});
-        pathNode = previous[static_cast<int>(pathNode.x)][static_cast<int>(pathNode.y)];
-    }
-
-    // Si la ruta existe, moverse a la primera posición de la ruta
-    if (!path.empty()) {
-        position = path[0];  // Mover a la siguiente posición en el camino
-    }
-}

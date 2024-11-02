@@ -1,7 +1,3 @@
-//
-// Created by maarigonzalezz on 21/10/24.
-//
-
 #ifndef TANK_H
 #define TANK_H
 #include "raylib.h"
@@ -14,31 +10,25 @@
 #include <algorithm>
 #include <random>
 #include <string>
+#include "../Development/Algorithms.h"
+#include "../GameLogic/Obstacle.h"
 
 using namespace std;
-class Tank1 {
-public:
-    Tank1(Vector2 pos, float rot, Texture2D img);
-    virtual ~Tank1() = default; // Declaración del destructor virtual
-
-    virtual void movement(Vector2 targetPosition, const std::vector<std::vector<int>>& adjMatrix, int cellSize) = 0; // Método virtual puro
-
-    const float tankSpeed = 200.0f;
-    const float width = 50.0f;
-    const float height = 50.0f;
+struct Tank {
     Vector2 position;
     float rotation;
-    Texture2D color;
+    Color color;
     bool active = true; // Tanque activo o destruido
-    int cellSize = 50;
-    void DrawTank();
-    bool IsMouseOver(Vector2 mousePosition);
-    //virtual void movement(Vector2 targetPosition, const std::vector<std::vector<int>>& adjMatrix, int cellSize);
-    virtual int probN();
-    bool IsCellFree(Vector2 position, const std::vector<std::vector<int>>& adjMatrix, int cellSize);
-    void LineaVista(Vector2 targetPosition, const std::vector<std::vector<int>> &matrizAdyacencia);
-
+    int vida = 100;
 };
+
+void DrawTank(const Tank &tank);
+int SelectTankByClick(Tank* tanks, int numTanks, Vector2 mousePosition);
+int Restlife(Tank &tank);
+void MoveTankAlongPath(Tank &tank, const vector<Vector2>& path, float deltaTime);
+bool RAmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vector<vector<int>>& matrizAdyacencia, const std::vector<Obstacle>& obstacles);
+bool ACmovement(Tank &tank, Vector2 targetPosition, float deltaTime, const vector<vector<int>>& matrizAdyacencia, const std::vector<Obstacle>& obstacles);
+bool CheckCollisionTankObstacle(const Tank &tank, const std::vector<Obstacle>& obstacles);
 
 
 

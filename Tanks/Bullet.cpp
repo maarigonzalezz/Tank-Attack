@@ -1,27 +1,45 @@
-
-
 #include "Bullet.h"
 
-void Bullet::FireBullet(Tank1 &tank) {
-    if(tank.active){
-        active = true;
-        position = tank.position;
-        velocity = {cos(tank.rotation * DEG2RAD) * bulletSpeed, sin(tank.rotation * DEG2RAD) * bulletSpeed};
-        shooter = &tank; // Asignar el tanque que dispara la bala
+void BounceBullet(Bullet &bullet, const Obstacle &obstacle) {
+    // Borde del círculo de la bala (posición + radio)
+    float bulletLeft = bullet.position.x - bullet.radius;
+    float bulletRight = bullet.position.x + bullet.radius;
+    float bulletTop = bullet.position.y - bullet.radius;
+    float bulletBottom = bullet.position.y + bullet.radius;
+
+    // Borde del rectángulo (obstáculo)
+    float obstacleLeft = obstacle.rect.x;
+    float obstacleRight = obstacle.rect.x + obstacle.rect.width;
+    float obstacleTop = obstacle.rect.y;
+    float obstacleBottom = obstacle.rect.y + obstacle.rect.height;
+
+    // Verificar si hay colisión
+    bool collisionX = bulletRight >= obstacleLeft && bulletLeft <= obstacleRight;
+    bool collisionY = bulletBottom >= obstacleTop && bulletTop <= obstacleBottom;
+
+    if (collisionX && collisionY) {
+        // Determinar el lado de colisión
+        float overlapLeft = bulletRight - obstacleLeft;
+        float overlapRight = obstacleRight - bulletLeft;
+        float overlapTop = bulletBottom - obstacleTop;
+        float overlapBottom = obstacleBottom - bulletTop;
+
+        // Revisar cuál de los cuatro lados tiene la menor superposición
+        bool hitFromLeft = overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom;
+        bool hitFromRight = overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom;
+        bool hitFromTop = overlapTop < overlapBottom && overlapTop < overlapLeft && overlapTop < overlapRight;
+        bool hitFromBottom = overlapBottom < overlapTop && overlapBottom < overlapLeft && overlapBottom < overlapRight;
+
+        // Invertir la velocidad de acuerdo con el lado de colisión
+        if (hitFromLeft || hitFromRight) {
+            bullet.velocity.x *= -1;
+            // Ajustar posición para evitar solapamiento
+            bullet.position.x += (hitFromLeft ? overlapLeft : -overlapRight);
+        }
+        if (hitFromTop || hitFromBottom) {
+            bullet.velocity.y *= -1;
+            // Ajustar posición para evitar solapamiento
+            bullet.position.y += (hitFromTop ? overlapTop : -overlapBottom);
+        }
     }
-
-
-}
-
-void Bullet::BounceBullet(const Obstacle &obstacle) {
-    // Revisar si la bala colisiona en el lado horizontal (superior/inferior) del obstáculo
-    if ((this->position.x > obstacle.rect.x && this->position.x < obstacle.rect.x + obstacle.rect.width) &&
-        (this->position.y <= obstacle.rect.y || this->position.y >= obstacle.rect.y + obstacle.rect.height)) {
-        this->velocity.y *= -1;  // Invertir la dirección en el eje Y
-        }
-    // Revisar si la bala colisiona en el lado vertical (izquierda/derecha) del obstáculo
-    if ((this->position.y > obstacle.rect.y && this->position.y < obstacle.rect.y + obstacle.rect.height) &&
-        (this->position.x <= obstacle.rect.x || this->position.x >= obstacle.rect.x + obstacle.rect.width)) {
-        this->velocity.x *= -1;  // Invertir la dirección en el eje X
-        }
 }

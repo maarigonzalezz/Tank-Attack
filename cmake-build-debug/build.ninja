@@ -67,24 +67,6 @@ build CMakeFiles/Tank_Attack.dir/Game.cpp.o: CXX_COMPILER__Tank_Attack_unscanned
   OBJECT_DIR = CMakeFiles/Tank_Attack.dir
   OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir
 
-build CMakeFiles/Tank_Attack.dir/GameLogic/Player.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/GameLogic/Player.cpp || cmake_object_order_depends_target_Tank_Attack
-  DEP_FILE = CMakeFiles/Tank_Attack.dir/GameLogic/Player.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always -I/usr/local/include
-  OBJECT_DIR = CMakeFiles/Tank_Attack.dir
-  OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir/GameLogic
-
-build CMakeFiles/Tank_Attack.dir/Tanks/ACTank.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/Tanks/ACTank.cpp || cmake_object_order_depends_target_Tank_Attack
-  DEP_FILE = CMakeFiles/Tank_Attack.dir/Tanks/ACTank.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always -I/usr/local/include
-  OBJECT_DIR = CMakeFiles/Tank_Attack.dir
-  OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir/Tanks
-
-build CMakeFiles/Tank_Attack.dir/Tanks/RATank.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/Tanks/RATank.cpp || cmake_object_order_depends_target_Tank_Attack
-  DEP_FILE = CMakeFiles/Tank_Attack.dir/Tanks/RATank.cpp.o.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always -I/usr/local/include
-  OBJECT_DIR = CMakeFiles/Tank_Attack.dir
-  OBJECT_FILE_DIR = CMakeFiles/Tank_Attack.dir/Tanks
-
 build CMakeFiles/Tank_Attack.dir/Tanks/Tank.cpp.o: CXX_COMPILER__Tank_Attack_unscanned_Debug /home/maarigonzalezz/Escritorio/Tank-Attack/Tanks/Tank.cpp || cmake_object_order_depends_target_Tank_Attack
   DEP_FILE = CMakeFiles/Tank_Attack.dir/Tanks/Tank.cpp.o.d
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always -I/usr/local/include
@@ -111,7 +93,7 @@ build CMakeFiles/Tank_Attack.dir/Development/Algorithms.cpp.o: CXX_COMPILER__Tan
 #############################################
 # Link the executable Tank_Attack
 
-build Tank_Attack: CXX_EXECUTABLE_LINKER__Tank_Attack_Debug CMakeFiles/Tank_Attack.dir/main.cpp.o CMakeFiles/Tank_Attack.dir/Development/Graph.cpp.o CMakeFiles/Tank_Attack.dir/Game.cpp.o CMakeFiles/Tank_Attack.dir/GameLogic/Player.cpp.o CMakeFiles/Tank_Attack.dir/Tanks/ACTank.cpp.o CMakeFiles/Tank_Attack.dir/Tanks/RATank.cpp.o CMakeFiles/Tank_Attack.dir/Tanks/Tank.cpp.o CMakeFiles/Tank_Attack.dir/Tanks/Bullet.cpp.o CMakeFiles/Tank_Attack.dir/Development/Algorithms.cpp.o | /usr/local/lib/libraylib.a
+build Tank_Attack: CXX_EXECUTABLE_LINKER__Tank_Attack_Debug CMakeFiles/Tank_Attack.dir/main.cpp.o CMakeFiles/Tank_Attack.dir/Development/Graph.cpp.o CMakeFiles/Tank_Attack.dir/Game.cpp.o CMakeFiles/Tank_Attack.dir/Tanks/Tank.cpp.o CMakeFiles/Tank_Attack.dir/Tanks/Bullet.cpp.o CMakeFiles/Tank_Attack.dir/Development/Algorithms.cpp.o | /usr/local/lib/libraylib.a
   FLAGS = -g
   LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib  /usr/local/lib/libraylib.a  -L/usr/local/lib -lraylib
   OBJECT_DIR = CMakeFiles/Tank_Attack.dir
